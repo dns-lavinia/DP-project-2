@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import "tailwindcss/tailwind.css"
 import Head from 'next/head'
+import Layout from 'layouts/Layout'
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
@@ -10,9 +11,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <link rel="icon" href="/favicon.ico" />
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
             </Head>
-            <div className=" bg-dark-4 min-h-screen w-screen">
+            <Layout>
                 <Component {...pageProps} />
-            </div>
+            </Layout>
         </>
     )
 }
