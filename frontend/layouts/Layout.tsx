@@ -1,4 +1,6 @@
-import { HomeIcon } from '@heroicons/react/outline';
+import { HomeIcon } from '@heroicons/react/solid';
+import Chat from 'components/chat/Chat';
+import UserStatus from 'components/user-status/UserStatus';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -19,10 +21,11 @@ export default function Layout({ children }: LayoutProps) {
                     </div>
                 </div>
                 <div className="flex w-full bg-dark-2 rounded-tl-xl overflow-hidden">
-                    <div className="flex flex-col w-80">
-                        <div className="w-full h-16 bg-dark-3 border-b border-gray-900">
-                            
+                    <div className="flex flex-col w-96">
+                        <div className="w-full h-24 bg-dark-3 border-b border-gray-900">
+                            <UserStatus />
                         </div>
+                        <Chat />
                     </div>
                     <div className="w-full bg-dark-4">
                         {children}

@@ -20,7 +20,7 @@ export default class Toggle {
     static __Item<Type>({ children, value, selected, onClick }: PrivateToggleButtonProps<Type>) {
         return (
             <div className={`h-10 w-min px-3 py-1 rounded-md transition-colors duration-150 ease-linear
-                    ${selected ? 'bg-purple-300 cursor-default' : 'bg-dark-1 hover:bg-purple-300 cursor-pointer'}`}
+                    ${selected ? 'bg-purple-300 cursor-default text-dark-1' : 'bg-dark-1 hover:bg-purple-300 cursor-pointer'}`}
                 onClick={() => onClick(value)}
             >
                 {children}

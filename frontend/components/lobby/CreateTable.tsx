@@ -34,25 +34,25 @@ export default function CreateTable({}: CreateTableProps) {
                 >
                     <Toggle.Item value="1v1">
                         <div className="flex text-2xl">
-                            <UserIcon className="w-6 text-white" />
+                            <UserIcon className="w-6" />
                             vs
-                            <UserIcon className="w-6 text-white" />
+                            <UserIcon className="w-6" />
                         </div>
                     </Toggle.Item>
                     <Toggle.Item value="1v1v1">
                         <div className="flex text-2xl">
-                            <UserIcon className="w-6 text-white" />
+                            <UserIcon className="w-6" />
                             vs
-                            <UserIcon className="w-6 text-white" />
+                            <UserIcon className="w-6" />
                             vs
-                            <UserIcon className="w-6 text-white" />
+                            <UserIcon className="w-6" />
                         </div>
                     </Toggle.Item>
                     <Toggle.Item value="2v2">
                         <div className="flex text-2xl">
-                            <UsersIcon className="w-6 text-white" />
+                            <UsersIcon className="w-6" />
                             vs
-                            <UsersIcon className="w-6 text-white" />
+                            <UsersIcon className="w-6" />
                         </div>
                     </Toggle.Item>
                 </Toggle.Group>
