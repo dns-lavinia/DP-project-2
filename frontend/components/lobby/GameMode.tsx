@@ -1,9 +1,9 @@
-import type { IGame } from "types/game";
+import type { ITable } from "types/game";
 import GameTable from "./GameTable";
 
 interface GameModeProps {
     title: React.ReactNode;
-    games: IGame[];
+    games: ITable[];
 }
 
 export default function GameMode({ title, games }: GameModeProps) {

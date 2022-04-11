@@ -1,8 +1,8 @@
 import { LockClosedIcon, ClockIcon, StarIcon, MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/solid";
 import { UserIcon } from "@heroicons/react/outline";
-import type { IGame } from "types/game";
+import type { ITable } from "types/game";
 
-interface GameTableProps extends IGame {}
+interface GameTableProps extends ITable {}
 
 export default function GameTable({ name, time, points, joined, password, cheating, bigger }: GameTableProps) {
     const full = joined === 4

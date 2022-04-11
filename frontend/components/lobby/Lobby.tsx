@@ -5,7 +5,6 @@ import { useState } from "react";
 import Modal from "components/common/Modal";
 import CreateTable from "./CreateTable";
 
-
 let games1 = [{
     name: "Thotu",
     joined: 2,
