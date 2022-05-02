@@ -1,8 +1,8 @@
 import Joi from 'joi'
 
 const create = Joi.object({
-    title: Joi.string().required(),
-    body: Joi.string().required()
+    user: Joi.string().required(),
+    message: Joi.string().required()
 })
 
 export default { create }

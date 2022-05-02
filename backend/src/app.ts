@@ -42,7 +42,7 @@ class App{
 
     private initialiseDbConnection(): void{
         mongoose.connect(
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/Posts?retryWrites=true&w=majority'
+            `mongodb+srv://eliza14:<password>@cluster0.k4ojk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
         )
     }
 

@@ -1,14 +1,14 @@
 import {Schema, model} from 'mongoose'
-import Post from '@/resources/post/post.interface'
+import Post from '@/resources/chat/message.interface'
 
 const PostSchema = new Schema(
     {
-        title: {
+        user: {
             type: String,
             required: true
         },
 
-        body: {
+        message: {
             type: String,
             required: true
         }
