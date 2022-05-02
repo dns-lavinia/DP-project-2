@@ -1,33 +1,56 @@
-import dotenv from 'dotenv';
-import MasterRouter from './routers/MasterRouter';
-import express, { Request, Response, NextFunction } from 'express';
-import ErrorHandler from './models/ErrorHandler';
+import express, {Application} from 'express'
+import mongoose from 'mongoose'
+import compression from 'compression'
+import cors from 'cors'
+import morgan from 'morgan'
+import Controller from '@/utils/interfaces/controller.interface'
+import ErrorMiddleware from '@/middleware/error.middleware'
+import helmet from 'helmet'
 
-// load the environment variables from the .env file
-dotenv.config({
-  path: '.env'
-});
+class App{
+    public express: Application
+    public port: number
 
-/**
- * Express server application class.
- * @description Will later contain the routing system.
- */
- class Server {
-  public app = express();
-  public router = MasterRouter;
+    constructor(controllers: Controller[], port: number){
+        this.express= express()
+        this.port= port
+    
+        this.initialiseDbConnection()
+        this.initialiseMiddleware()
+        this.initialiseControllers(controllers)
+        this.initialiseErrorHandling()
+    }
+
+    private initialiseMiddleware(): void{
+        this.express.use(helmet())
+        this.express.use(cors())
+        this.express.use(morgan('dev'))
+        this.express.use(express.json())
+        this.express.use(express.urlencoded({extended: false}))
+        this.express.use(compression())
+    }
+
+    private initialiseControllers(controllers: Controller[]): void{
+        controllers.forEach((controller: Controller) =>{
+            this.express.use('/api', controller.router)
+        })
+    }
+
+    private initialiseErrorHandling(): void{
+        this.express.use(ErrorMiddleware)
+    }
+
+    private initialiseDbConnection(): void{
+        mongoose.connect(
+            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/Posts?retryWrites=true&w=majority'
+        )
+    }
+
+    public listen(): void{
+        this.express.listen(this.port, () => {
+            console.log(`App listening on port ${this.port}`)
+        })
+    }
 }
 
-// initialize server app
-const server = new Server();
-
-// make server app handle any route starting with '/api'
-server.app.use('/api', server.router);
-
-// make server app handle any error
-server.app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
-  res.status(err.statusCode || 500).json({
-    status: 'error',
-    statusCode: err.statusCode,
-    message: err.message
-  });
-});
+export default App;
