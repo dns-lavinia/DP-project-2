@@ -1,5 +1,5 @@
 import type { ITable } from "types/game";
-import GameTable from "./GameTable";
+import GameTableCard from "./GameTableCard";
 
 interface GameModeProps {
     title: React.ReactNode;
@@ -9,23 +9,25 @@ interface GameModeProps {
 export default function GameMode({ title, games }: GameModeProps) {
 
     return (
-        <div className="bg-dark-2 items-center grow py-2 px-4 rounded-xl flex flex-col gap-4 basis-0 overflow-hidden">
+        <div className="bg-dark-2 grow h-full py-2 rounded-xl flex flex-col items-center gap-8 basis-0">
             <div className="text-3xl font-bold">
                 {title}
             </div>
-            {games.map(({id, name, joined, time, points, password, cheating, bigger}, index) => (
-                <GameTable 
-                    key={index}
-                    id={id}
-                    name={name} 
-                    joined={joined} 
-                    time={time} 
-                    points={points} 
-                    password={password}
-                    cheating={cheating}
-                    bigger={bigger}
-                />
-            ))}
+            <div className="flex flex-col gap-4 w-full max-h-full px-4 overflow-y-auto">
+                {games.map(({id, name, joined, time, points, password, cheating, bigger}, index) => (
+                    <GameTableCard 
+                        key={index}
+                        id={id}
+                        name={name} 
+                        joined={joined} 
+                        time={time} 
+                        points={points} 
+                        password={password}
+                        cheating={cheating}
+                        bigger={bigger}
+                    />
+                ))}
+            </div>
         </div>
     )
 }

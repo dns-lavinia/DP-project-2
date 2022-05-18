@@ -1,4 +1,7 @@
+import { useWindowDimensions } from "hooks/hooks"
+import { useState } from "react"
 import Auction from "./Auction"
+import Buttons from "./Buttons"
 import Hand from "./Hand"
 import Player from "./Player"
 import ScoreBoard from "./ScoreBoard"
@@ -24,8 +27,6 @@ const cards = [
 ]
 
 export default function Game() {
-
-    
     return (
         <div className="relative w-full h-full">
             <div className="absolute h-full w-full flex items-center justify-center">
@@ -40,7 +41,8 @@ export default function Game() {
             <Hand 
                 cards={cards}
             />
-            <ScoreBoard team1Points={68} team1PointsTotal={12} team2Points={44} team2PointsTotal={17}/>
+            <ScoreBoard team1Points={68} team1Score={12} team2Points={44} team2Score={17}/>
+            <Buttons isCheatMode={true} />
         </div>
     )
 }

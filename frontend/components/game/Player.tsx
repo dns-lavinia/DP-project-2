@@ -1,15 +1,16 @@
+import { useWindowDimensions } from "hooks/hooks";
+
 interface PlayerProps {
     position: number;
     angle: number;
 }
 
 export default function Player({ position, angle }: PlayerProps) {
-    const radius = 555;
+    const { height } = useWindowDimensions()
+    const radius = height / 2 - 90 
     
     const x = radius * Math.cos(angle);
     const y = -radius * Math.sin(angle); 
-
-    console.log(x, y);
 
     const style = {
         transform: `translate(${x}px, ${y}px)`

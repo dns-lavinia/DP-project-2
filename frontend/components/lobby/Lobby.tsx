@@ -1,145 +1,35 @@
 import Button from "components/common/Button";
 import { PlusIcon, UserIcon, UsersIcon } from "@heroicons/react/solid";
 import GameMode from "./GameMode";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "components/common/Modal";
 import CreateTable from "./CreateTable";
-
-let games1 = [{
-    name: "Thotu",
-    joined: 2,
-    time: 10,
-    points: 11,
-    password: false,
-    cheating: false,
-    bigger: false
-}, {
-    name: "Thotu",
-    joined: 3,
-    time: 20,
-    points: 6,
-    password: true,
-    cheating: true,
-    bigger: true
-}, {
-    name: "Thotu",
-    joined: 1,
-    time: 10,
-    points: 21,
-    password: true,
-    cheating: false,
-    bigger: true
-}, {
-    name: "Thotu",
-    joined: 4,
-    time: 20,
-    points: 11,
-    password: true,
-    cheating: true,
-    bigger: false
-}]
-
-let games2 = [{
-    name: "Thotu",
-    joined: 3,
-    time: 20,
-    points: 21,
-    password: true,
-    cheating: true,
-    bigger: true
-}, {
-    name: "Thotuwu",
-    joined: 3,
-    time: 20,
-    points: 21,
-    password: false,
-    cheating: false,
-    bigger: true
-}, {
-    name: "Thotu2",
-    joined: 4,
-    time: 10,
-    points: 21,
-    password: true,
-    cheating: false,
-    bigger: true
-}, {
-    name: "Thotu3",
-    joined: 1,
-    time: 20,
-    points: 11,
-    password: true,
-    cheating: true,
-    bigger: true
-}, {
-    name: "Thotuwu",
-    joined: 3,
-    time: 20,
-    points: 21,
-    password: false,
-    cheating: false,
-    bigger: true
-}, {
-    name: "Thotu2",
-    joined: 4,
-    time: 10,
-    points: 21,
-    password: true,
-    cheating: false,
-    bigger: true
-}, {
-    name: "Thotu3",
-    joined: 1,
-    time: 20,
-    points: 11,
-    password: true,
-    cheating: true,
-    bigger: true
-}, {
-    name: "Thotuwu",
-    joined: 3,
-    time: 20,
-    points: 21,
-    password: false,
-    cheating: false,
-    bigger: true
-}]
-
-let games3 = [{
-    name: "Thot",
-    joined: 3,
-    time: 10,
-    points: 11,
-    password: false,
-    cheating: false,
-    bigger: false
-}, {
-    name: "T",
-    joined: 3,
-    time: 20,
-    points: 6,
-    password: true,
-    cheating: false,
-    bigger: true
-}, {
-    name: "ADSDSA",
-    joined: 4,
-    time: 30,
-    points: 21,
-    password: true,
-    cheating: true,
-    bigger: true
-}]
+import { getTables } from "services/table";
+import { ITable } from "types/game";
 
 export default function Lobby() {
     const [showModal, setShowModal] = useState(false);
+    const [games1, setGames1] = useState<ITable[]>([]);
+    const [games2, setGames2] = useState<ITable[]>([]);
+    const [games3, setGames3] = useState<ITable[]>([]);
 
     const handleCreateTable = () => {
         setShowModal(true);
     }
 
+    useEffect(() => {
+        getTables()
+            .then(res => {
+                const tables: ITable[] = res.data
+
+                setGames1(tables.filter(table => table.gameMode === 0));
+                setGames2(tables.filter(table => table.gameMode === 1));
+                setGames3(tables.filter(table => table.gameMode === 2));
+            })
+    })
+
     return (
-        <div className="relative h-full grow">
+        <div className="relative h-full">
             {showModal && (
                 <Modal
                     onClose={() => setShowModal(false)}
@@ -152,10 +42,10 @@ export default function Lobby() {
                     <Button
                         onClick={handleCreateTable}
                     >
-                        <PlusIcon className="w-10 h-10 text-purple-300" />
+                        <PlusIcon className="w-10 h-10" />
                     </Button>
                 </div>
-                <div className="flex gap-16 px-4 grow justify-center">
+                <div className="flex gap-16 px-4 h-full justify-center overflow-hidden">
                     <GameMode title={
                         <div className="flex items-center gap-2">
                             <UserIcon className="w-16 text-purple-300" />

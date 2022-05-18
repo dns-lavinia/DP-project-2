@@ -4,21 +4,47 @@ import TextField from "components/common/TextField";
 import ToggleSwitch from "components/common/ToggleSwitch";
 import { useState } from "react";
 import Button from "components/common/Button";
+import { ITable } from "types/game";
+import { postTable } from "services/table";
+import Router from "next/router";
 
 interface CreateTableProps {
 
 }
 
 export default function CreateTable({}: CreateTableProps) {
-    const [gameMode, setGameMode] = useState('2v2');
+    const [gameMode, setGameMode] = useState(2);
     const [points, setPoints] = useState(21);
     const [time, setTime] = useState(5);
     const [isIber, setIsIber] = useState(true);
     const [isCheating, setIsCheating] = useState(false);
     const [password, setPassword] = useState('');
+
+    const [disableButton, setDisableButton] = useState(false);
     
     const handleCreateTable = () => {
+        setDisableButton(true);
+        const table: ITable = {
+            gameMode,
+            points,
+            time,
+            id: 0,
+            name: "Tatu",
+            joined: 1,
+            password: password,
+            cheating: isCheating,
+            bigger: isIber
+        }
 
+        postTable(table)
+            .then(res => {
+                Router.push(`/game/${0}`)
+                setDisableButton(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setDisableButton(false);
+            })
     }
 
     return (
@@ -32,14 +58,14 @@ export default function CreateTable({}: CreateTableProps) {
                     value={gameMode}
                     onChange={(value) => setGameMode(value)}
                 >
-                    <Toggle.Item value="1v1">
+                    <Toggle.Item value={0}>
                         <div className="flex text-2xl">
                             <UserIcon className="w-6" />
                             vs
                             <UserIcon className="w-6" />
                         </div>
                     </Toggle.Item>
-                    <Toggle.Item value="1v1v1">
+                    <Toggle.Item value={1}>
                         <div className="flex text-2xl">
                             <UserIcon className="w-6" />
                             vs
@@ -48,7 +74,7 @@ export default function CreateTable({}: CreateTableProps) {
                             <UserIcon className="w-6" />
                         </div>
                     </Toggle.Item>
-                    <Toggle.Item value="2v2">
+                    <Toggle.Item value={2}>
                         <div className="flex text-2xl">
                             <UsersIcon className="w-6" />
                             vs
@@ -134,6 +160,7 @@ export default function CreateTable({}: CreateTableProps) {
             <div className="flex justify-center">
                 <Button
                     onClick={handleCreateTable}
+                    disabled={disableButton}
                 >
                     Create Table
                 </Button>
