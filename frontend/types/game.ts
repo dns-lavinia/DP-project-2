@@ -32,3 +32,29 @@ export interface IMessage {
     time: string;
     image?: string;
 }
+
+export interface IGameRoundCards{
+    player1: ICard[];
+    player2: ICard[];
+    player3: ICard[];
+    player4: ICard[];
+}
+
+export interface IGameRound{
+    deck: IGameRoundCards;
+    firstPlayer: string;
+    currentPlayer: string;
+    winnerPlayer: string;
+    dealtCards: ICard[];
+    tromf: string;
+    roundNumber: number;
+    team1Score: number;
+    team2Score: number;
+    team1Points: number;
+    team2Points: number;
+    pointsChosen: number;
+    teamPoints: number;
+    gameRules: IGame;
+    team1Cheated: boolean;
+    team2Cheated: boolean;
+}
