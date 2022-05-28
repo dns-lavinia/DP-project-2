@@ -1,6 +1,6 @@
 import { IGameRound } from "types/game";
 
-export function GameEnd(gameround : IGameRound){
+export function RoundEnd(gameround : IGameRound){
     if( gameround.teamPoints == 1 ){ // Team 1
         if( gameround.team1Score >= gameround.pointsChosen ) // If they have enough points we add them
             gameround.team1Points+= (gameround.pointsChosen/33);

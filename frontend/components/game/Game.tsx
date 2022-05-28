@@ -1,30 +1,36 @@
 import { useWindowDimensions } from "hooks/hooks"
 import { useState } from "react"
+import { ICard, IGameHand, IGameRound, IGameRoundCards } from "types/game"
+import { DealCards } from "utils/dealCards"
 import Auction from "./Auction"
 import Buttons from "./Buttons"
 import Hand from "./Hand"
 import Player from "./Player"
 import ScoreBoard from "./ScoreBoard"
 
-interface GameProps {
-
-}
-
-const cards = [
-    {
-        suit: 'duba',
-        value: 0
-    }, {
-        suit: 'rosu',
-        value: 3
-    }, {
-        suit: 'ghinda',
-        value: 11
-    }, {
-        suit: 'verde',
-        value: 10
-    }
-]
+const cards : IGameRoundCards= DealCards(4);
+const dealtCards : ICard[] = [];
+// const game : IGame ;
+// const hand: IGameHand ={
+//     firstPlayer: '',
+//     currentPlayer: '',
+//     winnerPlayer: '',
+//     handPoints: 0,
+//     dealtCards: dealtCards
+// };
+// const roundDetails : IGameRound= {
+//     deck: cards,
+//     tromf: '',
+//     team1Score: 0,
+//     team2Score: 0,
+//     team1Points: 0,
+//     team2Points: 0,
+//     pointsChosen: 0,
+//     teamPoints: 0,
+//     gameRules: game,
+//     team1Cheated: false,
+//     team2Cheated: false,
+// };
 
 export default function Game() {
     return (
@@ -39,7 +45,7 @@ export default function Game() {
             </div>
             <Auction value={1}/>
             <Hand 
-                cards={cards}
+                cards={cards.player1}
             />
             <ScoreBoard team1Points={68} team1Score={12} team2Points={44} team2Score={17}/>
             <Buttons isCheatMode={true} />

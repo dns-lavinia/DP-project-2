@@ -23,13 +23,14 @@ export function DealCards(players: number){
     }
 
     let result : IGameRoundCards={
-        player1: shuffledCard.slice(0,6),
-        player2: shuffledCard.slice(6,12),
-        player3: shuffledCard.slice(12,18),
-        player4: shuffledCard.slice(18,24),
-    }
+            player1: shuffledCard.slice(0,6),
+            player2: shuffledCard.slice(6,12),
+            player3: shuffledCard.slice(12,18),
+            player4: shuffledCard.slice(18,24)
+        }
     
-    console.log(result);
+    
+    // console.log(result);
     return result;
 }
 
