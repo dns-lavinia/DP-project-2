@@ -16,7 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         client.close()
 
         res.status(200).json(result.map(table => ({
-            id: table._id.toString(),
+            // id: table._id.toString(),
+            id: table.id,
             gameMode: table.gameMode,
             name: table.name,
             joined: table.joined,
@@ -61,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('tables');
 
-        const result = await collection.findOneAndUpdate({_id: tableId}, {$set: {joined : joined}})
+        const result = await collection.findOneAndUpdate({id: tableId}, {$set: {joined : joined}})
 
         client.close()
 
@@ -86,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('tables');
 
-        const result = await collection.deleteOne({ _id: new ObjectId(tableId as string) });
+        const result = await collection.deleteOne({ id: tableId });
 
         client.close()
 

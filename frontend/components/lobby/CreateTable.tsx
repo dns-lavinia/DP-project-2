@@ -30,7 +30,7 @@ export default function CreateTable({}: CreateTableProps) {
             gameMode,
             points,
             time,
-            id: 0,
+            id: Math.floor(Math.random() * 1000),
             name: "Tatu",
             joined: 1,
             password: password,
@@ -40,7 +40,7 @@ export default function CreateTable({}: CreateTableProps) {
 
         postTable(table)
             .then(res => {
-                Router.push(`/game/${0}`)
+                Router.push(`/game/${table.id}`)
                 setDisableButton(false);
             })
             .catch(err => {

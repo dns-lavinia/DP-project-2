@@ -2,18 +2,23 @@ import { LockClosedIcon, ClockIcon, StarIcon, MinusCircleIcon, PlusCircleIcon } 
 import { UserIcon } from "@heroicons/react/outline";
 import type { ITable } from "types/game";
 import Router from "next/router";
+import axios from "axios";
 
 interface GameTableCardProps extends ITable {}
 
-export default function GameTableCard({ name, time, points, joined, password, cheating, bigger }: GameTableCardProps) {
+export default function GameTableCard({ id, name, time, points, joined, password, cheating, bigger }: GameTableCardProps) {
     const full = joined === 4
     const color = full ? "bg-red-400" : "bg-purple-300"
     const transition = "transition-colors ease-in-out duration-300"
 
     const handleJoin = () => {
         if (full) return
+
+        axios.put(`http://localhost:3000/api/tables/${id}`, {
+            joined: joined + 1
+        })
         
-        Router.push(`/game/54373753`)
+        Router.push(`/game/${id}`)
     }
 
     return (

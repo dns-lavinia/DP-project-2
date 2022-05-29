@@ -48,7 +48,7 @@ export default function Game() {
                 cards={cards.player1}
             />
             <ScoreBoard team1Points={68} team1Score={12} team2Points={44} team2Score={17}/>
-            <Buttons isCheatMode={true} />
+            <Buttons isCheatMode={true} joined={1} id={0}/>
         </div>
     )
 }

@@ -70,7 +70,7 @@ function checkDeck(deck : Array<ICard>){
         n= 0;
     }
 
-    console.log(r1, r2, f1, f2, g1, g2, d1, d2);
+    // console.log(r1, r2, f1, f2, g1, g2, d1, d2);
 
     if( r1 == 0 || r2 == 0 || f1 == 0 || f2 == 0 || g1 == 0 || g2 == 0 || d1 == 0 || d2 == 0 ) // one team has 0 card of one color
         return false;
