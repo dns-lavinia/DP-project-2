@@ -18,13 +18,13 @@ export default function GameMode({ title, games }: GameModeProps) {
                     <GameTableCard 
                         key={index}
                         id={id}
-                        name={name} 
-                        joined={joined} 
-                        time={time} 
-                        points={points} 
+                        name={name}
+                        joined={joined}
+                        time={time}
+                        points={points}
                         password={password}
                         cheating={cheating}
-                        bigger={bigger}
+                        bigger={bigger} gameMode={0}              
                     />
                 ))}
             </div>

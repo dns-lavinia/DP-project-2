@@ -7,6 +7,7 @@ import Button from "components/common/Button";
 import { ITable } from "types/game";
 import { postTable } from "services/table";
 import Router from "next/router";
+import { getId, modifyId } from "services/counter";
 
 interface CreateTableProps {
 
@@ -22,13 +23,14 @@ export default function CreateTable({}: CreateTableProps) {
 
     const [disableButton, setDisableButton] = useState(false);
     
-    const handleCreateTable = () => {
+    const handleCreateTable = async () => {
         setDisableButton(true);
+
         const table: ITable = {
             gameMode,
             points,
             time,
-            id: 0,
+            id: Math.floor(Math.random() * 1000),
             name: "Tatu",
             joined: 1,
             password: password,
@@ -38,7 +40,7 @@ export default function CreateTable({}: CreateTableProps) {
 
         postTable(table)
             .then(res => {
-                Router.push(`/game/${0}`)
+                Router.push(`/game/${table.id}`)
                 setDisableButton(false);
             })
             .catch(err => {

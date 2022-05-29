@@ -18,7 +18,7 @@ export interface IGame {
     points: number;
     password: boolean;
     cheating: boolean;
-    bigger: boolean
+    bigger: boolean;
 }
 
 export interface ICard {
@@ -42,12 +42,7 @@ export interface IGameRoundCards{
 
 export interface IGameRound{
     deck: IGameRoundCards;
-    firstPlayer: string;
-    currentPlayer: string;
-    winnerPlayer: string;
-    dealtCards: ICard[];
     tromf: string;
-    roundNumber: number;
     team1Score: number;
     team2Score: number;
     team1Points: number;
@@ -57,4 +52,13 @@ export interface IGameRound{
     gameRules: IGame;
     team1Cheated: boolean;
     team2Cheated: boolean;
+    hand: IGameHand;
+}
+
+export interface IGameHand{
+    firstPlayer: string;
+    currentPlayer: string;
+    winnerPlayer: string;
+    handPoints : number;
+    dealtCards: ICard[];
 }
