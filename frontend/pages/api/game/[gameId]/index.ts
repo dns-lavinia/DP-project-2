@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('game');
 
-        const result = await collection.findOne({ _id: new ObjectId(gameId as string) });
+        const result = await collection.findOne({ id: gameId });
 
         client.close()
 
@@ -35,26 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             team1Cheated: result.team1Cheated,
             team2Cheated: result.team2Cheated,
             hand: result.hand
-        })
-    }
-
-    if (req.method === 'POST') {
-        const data = req.body;
-
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/cruce?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
-
-        const collection = db.collection('game');
-
-        const result = await collection.insertOne(data)
-
-        client.close()
-
-        res.status(201).json({
-            message: "Game Created"
         })
     }
 
@@ -82,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('game');
 
-        const result = await collection.findOneAndUpdate({_id: gameId}, {$set: {
+        const result = await collection.findOneAndUpdate({id: gameId}, {$set: {
             deck : deck, 
             tromf : tromf, 
             team1Score : team1Score, 
@@ -119,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('game');
 
-        const result = await collection.deleteOne({ _id: new ObjectId(gameId as string) });
+        const result = await collection.deleteOne({ id: gameId });
 
         client.close()
 

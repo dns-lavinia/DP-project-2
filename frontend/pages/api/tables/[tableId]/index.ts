@@ -1,3 +1,4 @@
+import { table } from 'console';
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -12,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const db = client.db();
 
         const collection = db.collection('tables');
-
+        
         const result = await collection.findOne({ id: tableId });
 
         client.close()
@@ -39,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { tableId }= req.query;
         const { joined }= req.body;
 
-        console.log("update", joined);
+        console.log("update", joined, tableId);
 
         const client = await MongoClient.connect(
             // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
@@ -50,7 +51,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('tables');
 
-        const result = await collection.findOneAndUpdate({id: tableId}, {$set: {joined : joined}})
+        const result = await collection.updateOne({id: tableId}, {$set: {joined : joined}})
+
+        console.log(result);
 
         client.close()
 
