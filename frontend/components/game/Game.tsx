@@ -32,7 +32,13 @@ const dealtCards : ICard[] = [];
 //     team2Cheated: false,
 // };
 
-export default function Game() {
+interface GameProps {
+    id: string;
+}
+
+export default function Game({ id }: GameProps) {
+    
+
     return (
         <div className="relative w-full h-full">
             <div className="absolute h-full w-full flex items-center justify-center">

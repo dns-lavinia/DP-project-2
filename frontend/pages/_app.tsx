@@ -2,10 +2,11 @@ import type { AppProps } from 'next/app'
 import "tailwindcss/tailwind.css"
 import Head from 'next/head'
 import Layout from 'layouts/Layout'
+import { UserProvider } from 'contexts/UserContext'
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
-        <>
+        <UserProvider>
             <Head>
                 <title>Cruce</title>
                 <link rel="icon" href="/favicon.ico" />
@@ -14,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Layout>
                 <Component {...pageProps} />
             </Layout>
-        </>
+        </UserProvider>
     )
 }
 
