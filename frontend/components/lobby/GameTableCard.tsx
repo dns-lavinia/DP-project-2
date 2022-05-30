@@ -15,12 +15,13 @@ export default function GameTableCard({ id, name, time, points, joined, password
     const handleJoin = () => {
         if (full) return
 
-        console.log(joined);
+        // console.log(joined);
 
         axios.put(`http://localhost:3000/api/tables/${id}`, {
             joined: joined + 1
         })
         
+        // console.log("id", id);
         Router.push(`/game/${id}`)
     }
 

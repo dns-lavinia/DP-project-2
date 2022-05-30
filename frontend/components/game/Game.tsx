@@ -32,7 +32,7 @@ export default function Game() {
     //     team1Cheated: false,
     //     team2Cheated: false,
     // };
-    
+
     return (
         <div className="relative w-full h-full">
             <div className="absolute h-full w-full flex items-center justify-center">
