@@ -8,38 +8,6 @@ import Hand from "./Hand"
 import Player from "./Player"
 import ScoreBoard from "./ScoreBoard"
 
-<<<<<<< HEAD
-const cards : IGameRoundCards= DealCards(4);
-const dealtCards : ICard[] = [];
-// const game : IGame ;
-// const hand: IGameHand ={
-//     firstPlayer: '',
-//     currentPlayer: '',
-//     winnerPlayer: '',
-//     handPoints: 0,
-//     dealtCards: dealtCards
-// };
-// const roundDetails : IGameRound= {
-//     deck: cards,
-//     tromf: '',
-//     team1Score: 0,
-//     team2Score: 0,
-//     team1Points: 0,
-//     team2Points: 0,
-//     pointsChosen: 0,
-//     teamPoints: 0,
-//     gameRules: game,
-//     team1Cheated: false,
-//     team2Cheated: false,
-// };
-
-interface GameProps {
-    id: string;
-}
-
-export default function Game({ id }: GameProps) {
-    
-=======
 export default function Game() {
     const cards : IGameRoundCards= DealCards(4);
     const dealtCards : ICard[] = [];
@@ -64,7 +32,6 @@ export default function Game() {
     //     team1Cheated: false,
     //     team2Cheated: false,
     // };
->>>>>>> 003ae997e95b63934a38668b71cf57184a25c456
 
     return (
         <div className="relative w-full h-full">
