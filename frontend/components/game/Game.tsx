@@ -8,31 +8,31 @@ import Hand from "./Hand"
 import Player from "./Player"
 import ScoreBoard from "./ScoreBoard"
 
-const cards : IGameRoundCards= DealCards(4);
-const dealtCards : ICard[] = [];
-// const game : IGame ;
-// const hand: IGameHand ={
-//     firstPlayer: '',
-//     currentPlayer: '',
-//     winnerPlayer: '',
-//     handPoints: 0,
-//     dealtCards: dealtCards
-// };
-// const roundDetails : IGameRound= {
-//     deck: cards,
-//     tromf: '',
-//     team1Score: 0,
-//     team2Score: 0,
-//     team1Points: 0,
-//     team2Points: 0,
-//     pointsChosen: 0,
-//     teamPoints: 0,
-//     gameRules: game,
-//     team1Cheated: false,
-//     team2Cheated: false,
-// };
-
 export default function Game() {
+    const cards : IGameRoundCards= DealCards(4);
+    const dealtCards : ICard[] = [];
+    // const game : IGame ;
+    // const hand: IGameHand ={
+    //     firstPlayer: '',
+    //     currentPlayer: '',
+    //     winnerPlayer: '',
+    //     handPoints: 0,
+    //     dealtCards: dealtCards
+    // };
+    // const roundDetails : IGameRound= {
+    //     deck: cards,
+    //     tromf: '',
+    //     team1Score: 0,
+    //     team2Score: 0,
+    //     team1Points: 0,
+    //     team2Points: 0,
+    //     pointsChosen: 0,
+    //     teamPoints: 0,
+    //     gameRules: game,
+    //     team1Cheated: false,
+    //     team2Cheated: false,
+    // };
+    
     return (
         <div className="relative w-full h-full">
             <div className="absolute h-full w-full flex items-center justify-center">

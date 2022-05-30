@@ -3,6 +3,7 @@ import { UserIcon } from "@heroicons/react/outline";
 import type { ITable } from "types/game";
 import Router from "next/router";
 import axios from "axios";
+import { join } from "path";
 
 interface GameTableCardProps extends ITable {}
 
@@ -13,6 +14,8 @@ export default function GameTableCard({ id, name, time, points, joined, password
 
     const handleJoin = () => {
         if (full) return
+
+        console.log(joined);
 
         axios.put(`http://localhost:3000/api/tables/${id}`, {
             joined: joined + 1
