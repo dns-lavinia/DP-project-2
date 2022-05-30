@@ -30,7 +30,7 @@ export function DealCards(players: number){
         }
     
     
-    console.log(result);
+    // console.log(result);
     return result;
 }
 

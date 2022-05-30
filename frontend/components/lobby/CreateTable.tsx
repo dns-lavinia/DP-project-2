@@ -7,7 +7,6 @@ import Button from "components/common/Button";
 import { ITable } from "types/game";
 import { postTable } from "services/table";
 import Router from "next/router";
-import { getId, modifyId } from "services/counter";
 
 interface CreateTableProps {
 

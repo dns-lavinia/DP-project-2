@@ -10,14 +10,19 @@ interface ButtonsProps {
 
 export default function Buttons({ isCheatMode, joined, id }: ButtonsProps) {
     const handleLeaveGame = async () => {
+        console.log("id", id);
+
         if( joined == 1 ){
             await axios.delete(`http://localhost:3000/api/tables/${id}`);
-        }else{
+        }else if( joined > 1 ){
             await axios.put(`http://localhost:3000/api/tables/${id}`, {
-            joined: joined - 1
-        });
+                joined: joined - 1
+            });
         }
-        
+
+        // const res= axios.get(`http://localhost:3000/api/tables/${id}`);        
+        // console.log(res);
+
         Router.push("/");
     }
 
