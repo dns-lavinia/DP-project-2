@@ -1,19 +1,16 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { connectToMongo } from 'utils/mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         const { gameId } = req.query;
 
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('game');
 
-        const result = await collection.findOne({ id: gameId });
+        const result = await collection.findOne({ gameId: gameId });
 
         client.close()
 
@@ -21,60 +18,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(404);
             return;
         }
-
-        res.status(200).json({
-            deck: result.deck,
-            tromf: result.tromf,
-            team1Score: result.team1Score,
-            team2Score: result.team2Score,
-            team1Points: result.team1Points,
-            team2Points: result.team2Points,
-            pointsChosen: result.pointsChosen,
-            teamPoints: result.teamPoints,
-            gameRules: result.gameRules,
-            team1Cheated: result.team1Cheated,
-            team2Cheated: result.team2Cheated,
-            hand: result.hand
-        })
+        
+        res.status(200).json(result)
     }
 
     if (req.method === 'PUT') {
-        const { gameId }= req.query;
-        const { 
-            deck, 
-            tromf, 
-            team1Score, 
-            team2Score, 
-            team1Points, 
-            team2Points, 
-            pointsChosen, 
-            teamPoints, 
-            team1Cheated, 
-            team2Cheated, 
-            hand}= req.body;
-
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-
-        const db = client.db();
+        const { gameId } = req.query;
+        const { joined, player } = req.body;
+        
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('game');
 
-        const result = await collection.findOneAndUpdate({id: gameId}, {$set: {
-            deck : deck, 
-            tromf : tromf, 
-            team1Score : team1Score, 
-            team2Score : team2Score, 
-            team1Points : team1Points, 
-            team2Points : team2Points, 
-            pointsChosen : pointsChosen, 
-            teamPoints : teamPoints, 
-            team1Cheated : team1Cheated, 
-            team2Cheated : team2Cheated, 
-            hand : hand
-        }})
+        const result = await collection.updateOne(
+            {gameId: gameId, "players.id": `${joined-1}`}, 
+            {$set: {
+                joined: joined,
+                'players.$.name': player.name,
+                'players.$.photo': player.photo
+            }
+        })
 
         client.close()
 
@@ -91,11 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'DELETE') {
         const { gameId } = req.query;
 
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('game');
 

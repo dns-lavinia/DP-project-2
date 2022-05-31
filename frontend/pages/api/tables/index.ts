@@ -1,15 +1,11 @@
 import { MongoClient } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { connectToMongo } from 'utils/mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
-        const tableId= req.query;
-
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/cruce?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
+        
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('tables');
 
@@ -34,11 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const data = req.body;
 
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/cruce?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('tables');
 

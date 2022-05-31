@@ -7,6 +7,8 @@ import Button from "components/common/Button";
 import { ITable } from "types/game";
 import { postTable } from "services/table";
 import Router from "next/router";
+import { useUser } from "contexts/UserContext";
+import { createNewGame } from "services/game";
 
 interface CreateTableProps {
 
@@ -19,8 +21,9 @@ export default function CreateTable({}: CreateTableProps) {
     const [isIber, setIsIber] = useState(true);
     const [isCheating, setIsCheating] = useState(false);
     const [password, setPassword] = useState('');
-
     const [disableButton, setDisableButton] = useState(false);
+
+    const { user } = useUser();
     
     const handleCreateTable = async () => {
         setDisableButton(true);
@@ -29,8 +32,8 @@ export default function CreateTable({}: CreateTableProps) {
             gameMode,
             points,
             time,
-            id: Math.floor(Math.random() * 1000),
-            name: "Tatu",
+            id: Math.random().toString(36).substring(2, 15),
+            name: user?.displayName ?? 'Anonymous',
             joined: 1,
             password: password,
             cheating: isCheating,
@@ -38,9 +41,13 @@ export default function CreateTable({}: CreateTableProps) {
         }
 
         postTable(table)
-            .then(res => {
-                Router.push(`/game/${table.id}`)
-                setDisableButton(false);
+            .then(_ => {
+                createNewGame(table.id, user?.displayName ?? 'Anonymous', user?.photoURL ?? '')
+                    .then(_ => {
+                        Router.push(`/game/${table.id}`);
+                        setDisableButton(false);
+                    })
+                    .catch(err => console.log(err));
             })
             .catch(err => {
                 console.log(err);

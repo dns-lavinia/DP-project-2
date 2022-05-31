@@ -1,79 +1,41 @@
-import { ICard, IGameRoundCards } from "types/game";
+import { ICard } from "types/game";
 
-export function DealCards(players: number){
-    let cards= Array<ICard>();
-    let color= ['rosu', 'frunza', 'duba', 'ghinda'];
-    let numbers= [2, 3, 4, 0, 10, 11];
+export function shuffleCards(){
+    const suits = ['R', 'V', 'D', 'G'];
+    const values = [0, 2, 3, 4, 10, 11];
 
-    for(var c in color){
-        for(var n in numbers){
-            let card : ICard= {
-                suit: color[c],
-                value: numbers[n]
-            };
-
-            cards.push(card);
+    // cartesian product
+    let deck = []
+    for (let suit of suits) {
+        for (let value of values) {
+            deck.push({ suit, value });
         }
-    }
+    }   
 
-    let shuffledCard= cards.sort(() => Math.random() - 0.5);
+    let shuffledDeck, p1Cards, p2Cards, p3Cards, p4Cards;
+    do {
+        shuffledDeck = deck.sort(() => Math.random() - 0.5);
 
-    while( checkDeck(shuffledCard) == false){
-        shuffledCard= cards.sort(() => Math.random() - 0.5);
-    }
+        p1Cards = shuffledDeck.slice(0, 6);
+        p2Cards = shuffledDeck.slice(6, 12);
+        p3Cards = shuffledDeck.slice(12, 18);
+        p4Cards = shuffledDeck.slice(18, 24);
+    } while ( !check(p1Cards, p2Cards, p3Cards, p4Cards) );
 
-    let result : IGameRoundCards={
-            player1: shuffledCard.slice(0,6),
-            player2: shuffledCard.slice(6,12),
-            player3: shuffledCard.slice(12,18),
-            player4: shuffledCard.slice(18,24)
-        }
-    
-    
-    // console.log(result);
-    return result;
+    return [p1Cards, p2Cards, p3Cards, p4Cards]
 }
 
-function checkDeck(deck : Array<ICard>){
-    let r1= 0, r2= 0, f1= 0, f2= 0, g1=0, g2= 0, d1=0, d2= 0, n=0;
-    for(var i=0 ; i<4 ; i++ ){
-        for(var j=0 ; j<6 ; j++ ){
-            if(deck[i*6+j].suit == 'rosu'){
-                if( i % 2 == 1 )    // team 1
-                    r1+= 1;
-                else                // team 2
-                    r2+= 1;
-            }
-            if(deck[i*6+j].suit == 'frunza'){
-                if( i % 2 == 1 )    // team 1
-                    f1+= 1;
-                else                // team 2
-                    f2+= 1;
-            }
-            if(deck[i*6+j].suit == 'duba'){
-                if( i % 2 == 1 )    // team 1
-                    d1+= 1;
-                else                // team 2
-                    d2+= 1;
-            }
-            if(deck[i*6+j].suit == 'ghinda'){
-                if( i % 2 == 1 )    // team 1
-                    g1+= 1;
-                else                // team 2
-                    g2+= 1;
-            }
-            if(deck[i*6+j].value == 0)
-                n++;
+function check(p1c: ICard[], p2c: ICard[], p3c: ICard[], p4c: ICard[]) {
+    return checkNines(p1c) && checkNines(p2c) && checkNines(p3c) && checkNines(p4c);
+}
+
+function checkNines(deck: ICard[]){
+    let nines = 0;
+    for (let card of deck) {
+        if (card.value === 0) {
+            nines++;
         }
-        if( n == 4 )    // one player has 4 nines
-            return false;
-        n= 0;
     }
 
-    // console.log(r1, r2, f1, f2, g1, g2, d1, d2);
-
-    if( r1 == 0 || r2 == 0 || f1 == 0 || f2 == 0 || g1 == 0 || g2 == 0 || d1 == 0 || d2 == 0 ) // one team has 0 card of one color
-        return false;
-
-    return true;
+    return nines !== 4;
 }

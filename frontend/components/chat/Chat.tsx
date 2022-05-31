@@ -1,4 +1,6 @@
 import TextField from "components/common/TextField"
+import { useUser } from "contexts/UserContext";
+import { Router } from "next/router";
 import { useState } from "react";
 import { postMessage } from "services/chat";
 import { IMessage } from "types/game";
@@ -10,12 +12,20 @@ interface ChatProps {
 
 export default function Chat({ messages }: ChatProps) {
     const [message, setMessage] = useState("");
+    const { user } = useUser();
 
     const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            const msg = {
-                image: "https://cdn.discordapp.com/attachments/264502274032664587/962125258972889179/unknown.png",
-                name: "Thotu3",
+            if (message.trim().length === 0) return;
+
+            const msg = user ? {
+                image: user.photoURL ?? undefined,
+                name: user.displayName ?? 'Anonymous',
+                message: message,
+                time: new Date().toLocaleString()
+            } : {
+                image: undefined,
+                name: 'Anonymous',
                 message: message,
                 time: new Date().toLocaleString()
             }
@@ -30,12 +40,13 @@ export default function Chat({ messages }: ChatProps) {
     return (
         <div className="w-full h-full flex flex-col justify-end">
             <div className="flex flex-col p-2 gap-2">
-                {messages.map(({image, name, message}, index) => (
+                {messages.map(({image, name, message, time}, index) => (
                     <Message 
                         key={index}
                         image={image}
                         name={name}
                         message={message}
+                        time={time}
                     />
                 ))}
             </div>

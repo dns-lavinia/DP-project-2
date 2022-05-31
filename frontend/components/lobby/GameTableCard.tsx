@@ -4,25 +4,27 @@ import type { ITable } from "types/game";
 import Router from "next/router";
 import axios from "axios";
 import { join } from "path";
+import { joinTable } from "services/table";
+import { useUser } from "contexts/UserContext";
 
 interface GameTableCardProps extends ITable {}
 
 export default function GameTableCard({ id, name, time, points, joined, password, cheating, bigger }: GameTableCardProps) {
     const full = joined === 4
-    const color = full ? "bg-red-400" : "bg-purple-300"
     const transition = "transition-colors ease-in-out duration-300"
+
+    const { user } = useUser();
 
     const handleJoin = () => {
         if (full) return
 
-        // console.log(joined);
-
-        axios.put(`http://localhost:3000/api/tables/${id}`, {
-            joined: joined + 1
-        })
-        
-        // console.log("id", id);
-        Router.push(`/game/${id}`)
+        joinTable(id, user?.displayName ?? '', user?.photoURL ?? '', joined)
+            .then(() => {
+                Router.push(`/game/${id}`)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     return (
@@ -30,7 +32,7 @@ export default function GameTableCard({ id, name, time, points, joined, password
             <div className={`group rounded-xl flex w-full h-full overflow-hidden cursor-pointer ${full && 'pointer-events-none'}`}
                 onClick={handleJoin}
             >
-                <div className={`${color} w-3 ${transition} group-hover:bg-dark-1`} />
+                <div className={`${full ? "bg-red-400" : "bg-purple-300"} w-3 ${transition} group-hover:bg-dark-1`} />
                 <div className={`py-2 px-3 bg-dark-1 grow grid grid-flow-row grid-cols-2 ${transition} group-hover:bg-purple-300`}>
                     <div className="font-bold text-xl">
                         {name}

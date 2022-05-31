@@ -30,6 +30,23 @@ module.exports = {
         'max-4': 'repeat(4, max-content)',
         'max-5': 'repeat(5, max-content)',
         'max-6': 'repeat(6, max-content)',
+      },
+      keyframes: {
+        'load': {
+          '0%, 100%': {
+              'transform': 'translateY(-10px)',
+              'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
+          },
+          '50%': {
+              'transform': 'translateY(10px)',
+              'animation-timing-function': 'cubic-bezier(0,0,0.2,1)',
+          }
+        }
+      },
+      animation: {
+        'load-1': '1.5s load 0.0s cubic-bezier(.24,.54,.7,.48) infinite',
+        'load-2': '1.5s load 0.5s cubic-bezier(.24,.54,.7,.48) infinite',
+        'load-3': '1.5s load 1.0s cubic-bezier(.71,.16,.25,.83) infinite',
       }
     },
     variants: {

@@ -1,5 +1,5 @@
 export interface ITable {
-    id: number;
+    id: string;
     gameMode: number;
     name: string;
     joined: number;
@@ -10,22 +10,6 @@ export interface ITable {
     bigger: boolean
 }
 
-export interface IGame {
-    id: number;
-    size: number;
-    joined: number;
-    time: number;
-    points: number;
-    password: boolean;
-    cheating: boolean;
-    bigger: boolean;
-}
-
-export interface ICard {
-    suit: string;
-    value: number;
-}
-
 export interface IMessage {
     name: string;
     message: string;
@@ -33,32 +17,37 @@ export interface IMessage {
     image?: string;
 }
 
-export interface IGameRoundCards{
-    player1: ICard[];
-    player2: ICard[];
-    player3: ICard[];
-    player4: ICard[];
+export interface IGame {
+    gameId: string;
+    team1Score: number;
+    team2Score: number;
+    joined: number;
+    players: IPlayer[]
+    round: IGameRound;
+}
+
+export interface IPlayer {
+    id: string;
+    name: string;
+    photo: string;
+}
+
+export interface ICard {
+    suit: string;
+    value: number;
 }
 
 export interface IGameRound{
-    deck: IGameRoundCards;
-    tromf: string;
-    team1Score: number;
-    team2Score: number;
+    turn: number;
+    playerTurn: number;
+    playerCards: ICard[][];
+    auction: {
+        playerAuction: number[];
+        value: number;
+    }
+    trumpCard: string;
     team1Points: number;
     team2Points: number;
-    pointsChosen: number;
-    teamPoints: number;
-    gameRules: IGame;
     team1Cheated: boolean;
     team2Cheated: boolean;
-    hand: IGameHand;
-}
-
-export interface IGameHand{
-    firstPlayer: string;
-    currentPlayer: string;
-    winnerPlayer: string;
-    handPoints : number;
-    dealtCards: ICard[];
 }

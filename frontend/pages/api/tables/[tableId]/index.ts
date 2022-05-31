@@ -1,16 +1,13 @@
 import { table } from 'console';
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { connectToMongo } from 'utils/mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         const { tableId } = req.query;
 
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('tables');
         
@@ -37,17 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === 'PUT') {
-        const { tableId }= req.query;
-        const { joined }= req.body;
+        const { tableId } = req.query;
+        const { joined } = req.body;
 
         console.log("update", joined, tableId);
 
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-
-        const db = client.db();
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('tables');
 
@@ -72,11 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         console.log("delete", tableId);
 
-        const client = await MongoClient.connect(
-            // 'mongodb+srv://admin:WF0qDFsvY6ux716Q@thotu.lmwwa.mongodb.net/recipes?retryWrites=true&w=majority'
-            'mongodb+srv://eliza14:fuckoff01@cluster0.k4ojk.mongodb.net/?retryWrites=true&w=majority'
-        );
-        const db = client.db();
+        const { db, client } = await connectToMongo();
 
         const collection = db.collection('tables');
 
