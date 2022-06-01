@@ -22,14 +22,14 @@ export interface IGame {
     team1Score: number;
     team2Score: number;
     joined: number;
-    players: IPlayer[]
+    players: IUser[]
     round: IGameRound;
 }
 
-export interface IPlayer {
-    id: string;
-    name: string;
-    photo: string;
+export interface IUser {
+    uid: string;
+    name: string | null;
+    photo: string | null;
 }
 
 export interface ICard {

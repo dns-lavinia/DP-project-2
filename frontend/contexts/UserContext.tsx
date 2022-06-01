@@ -9,7 +9,8 @@ import {
 } from 'firebase/auth'
 
 interface UserContext {
-    user: User | null;
+    user: User;
+    guest: boolean;
     logInGoogle: () => Promise<UserCredential>;
     logOut: () => Promise<void>;
 }
@@ -24,8 +25,15 @@ interface UserProviderProps {
     children: React.ReactNode;
 }
 
+const defaultUser = {
+    uid: Math.random().toString(32).slice(2),
+    displayName: 'Guest',
+    photoURL: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+}
+
 export function UserProvider({ children }: UserProviderProps) {
-    const [user, setUser] = useState<User | null>({} as User)
+    const [user, setUser] = useState<User>(defaultUser as User)
+    const [guest, setGuest] = useState<boolean>(true)
 
     const logInGoogle = () => {
         return signInWithPopup(auth, new GoogleAuthProvider())
@@ -37,7 +45,8 @@ export function UserProvider({ children }: UserProviderProps) {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
-            setUser(user)
+            setUser(user ?? defaultUser as User)
+            setGuest(!user)
         })
 
         return unsubscribe
@@ -45,6 +54,7 @@ export function UserProvider({ children }: UserProviderProps) {
 
     const value = {
         user,
+        guest,
         logInGoogle,
         logOut
     }

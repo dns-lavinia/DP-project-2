@@ -13,6 +13,8 @@ export default function Lobby() {
     const [games2, setGames2] = useState<ITable[]>([]);
     const [games3, setGames3] = useState<ITable[]>([]);
 
+    const [tablePoll, setTablePoll] = useState(0);
+
     const handleCreateTable = () => {
         setShowModal(true);
     }
@@ -25,8 +27,12 @@ export default function Lobby() {
                 setGames1(tables.filter(table => table.gameMode === 0));
                 setGames2(tables.filter(table => table.gameMode === 1));
                 setGames3(tables.filter(table => table.gameMode === 2));
+
+                setTimeout(() => {
+                    setTablePoll(tablePoll + 1);
+                }, 2000)
             })
-    })
+    }, [tablePoll])
 
     return (
         <div className="relative h-full">

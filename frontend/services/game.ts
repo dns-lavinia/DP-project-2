@@ -1,4 +1,5 @@
 import axios from "axios";
+import { User } from "firebase/auth";
 import { IGame } from "types/game";
 import { shuffleCards } from "utils/dealCards";
 
@@ -8,7 +9,7 @@ export async function getGameState(id: string) {
     return await axios.get(url);
 }
 
-export async function createNewGame(id: string, name: string, photo: string) {
+export async function createNewGame(id: string, user: User) {
     const url = `http://localhost:3000/api/game`;
 
     const cards = shuffleCards();
@@ -20,24 +21,9 @@ export async function createNewGame(id: string, name: string, photo: string) {
         joined: 1,
         players: [
             {
-                id: '0',
-                name: name,
-                photo: photo,
-            },
-            {
-                id: '1',
-                name: '',
-                photo: '',
-            },
-            {
-                id: '2',
-                name: '',
-                photo: '',
-            },
-            {
-                id: '3',
-                name: '',
-                photo: '',
+                uid: user.uid,
+                name: user.displayName,
+                photo: user.photoURL,
             }
         ],
         round: {

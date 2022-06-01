@@ -14,15 +14,15 @@ export default function Auth() {
         }
     }
 
-    const handleTwitterLogin = async () => {
-        try {
-            await logInTwitter()
-            Router.push('/')
-        }
-        catch (error) {
-            console.log(error)
-        }
-    }
+    // const handleTwitterLogin = async () => {
+    //     try {
+    //         await logInTwitter()
+    //         Router.push('/')
+    //     }
+    //     catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     return (
         <div className="flex flex-col gap-6 items-center">

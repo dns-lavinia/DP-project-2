@@ -1,27 +1,20 @@
 import { MinusIcon, XIcon } from "@heroicons/react/solid";
 import axios from "axios";
+import { useUser } from "contexts/UserContext";
 import Router from "next/router";
+import { leaveTable } from "services/table";
 
 interface ButtonsProps {
     isCheatMode: boolean,
     joined : number,
-    id: number
+    id: string
 }
 
 export default function Buttons({ isCheatMode, joined, id }: ButtonsProps) {
+    const { user } = useUser();
+
     const handleLeaveGame = async () => {
-        console.log("id", id);
-
-        if( joined == 1 ){
-            await axios.delete(`http://localhost:3000/api/tables/${id}`);
-        }else if( joined > 1 ){
-            await axios.put(`http://localhost:3000/api/tables/${id}`, {
-                joined: joined - 1
-            });
-        }
-
-        // const res= axios.get(`http://localhost:3000/api/tables/${id}`);        
-        // console.log(res);
+        leaveTable(id, user.uid, joined)
 
         Router.push("/");
     }

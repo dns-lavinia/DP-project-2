@@ -20,32 +20,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return;
         }
 
-        res.status(200).json({
-            id: result.id,
-            gameMode: result.gameMode,
-            name: result.name,
-            joined: result.joined,
-            time: result.time,
-            points: result.points,
-            password: result.password,
-            cheating: result.cheating,
-            bigger: result.bigger
-        })
+        res.status(200).json(result)
     }
 
     if (req.method === 'PUT') {
         const { tableId } = req.query;
         const { joined } = req.body;
 
-        console.log("update", joined, tableId);
-
         const { db, client } = await connectToMongo();
 
         const collection = db.collection('tables');
 
         const result = await collection.updateOne({id: tableId}, {$set: {joined : joined}})
-
-        console.log(result);
 
         client.close()
 
@@ -61,8 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'DELETE') {
         const { tableId } = req.query;
-
-        console.log("delete", tableId);
 
         const { db, client } = await connectToMongo();
 

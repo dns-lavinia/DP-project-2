@@ -1,11 +1,9 @@
-import { LockClosedIcon, ClockIcon, StarIcon, MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/solid";
-import { UserIcon } from "@heroicons/react/outline";
-import type { ITable } from "types/game";
-import Router from "next/router";
-import axios from "axios";
-import { join } from "path";
-import { joinTable } from "services/table";
-import { useUser } from "contexts/UserContext";
+import { LockClosedIcon, ClockIcon, StarIcon, MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/solid"
+import { UserIcon } from "@heroicons/react/outline"
+import type { ITable } from "types/game"
+import Router from "next/router"
+import { joinTable } from "services/table"
+import { useUser } from "contexts/UserContext"
 
 interface GameTableCardProps extends ITable {}
 
@@ -13,12 +11,12 @@ export default function GameTableCard({ id, name, time, points, joined, password
     const full = joined === 4
     const transition = "transition-colors ease-in-out duration-300"
 
-    const { user } = useUser();
+    const { user } = useUser()
 
     const handleJoin = () => {
         if (full) return
 
-        joinTable(id, user?.displayName ?? '', user?.photoURL ?? '', joined)
+        joinTable(id, user, joined)
             .then(() => {
                 Router.push(`/game/${id}`)
             })

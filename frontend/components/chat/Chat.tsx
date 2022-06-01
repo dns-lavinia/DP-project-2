@@ -1,18 +1,30 @@
 import TextField from "components/common/TextField"
 import { useUser } from "contexts/UserContext";
 import { Router } from "next/router";
-import { useState } from "react";
-import { postMessage } from "services/chat";
+import { useState, useEffect } from "react";
+import { getMessages, postMessage } from "services/chat";
 import { IMessage } from "types/game";
 import Message from "./Message"
 
-interface ChatProps {
-    messages: IMessage[];
-}
-
-export default function Chat({ messages }: ChatProps) {
+export default function Chat() {
+    const [messages, setMessages] = useState<IMessage[]>([]);
     const [message, setMessage] = useState("");
+    const [messagePing, setMessagePing] = useState(0);
     const { user } = useUser();
+
+    
+    useEffect(() => {
+        getMessages()
+            .then(res => {
+                const msgs: IMessage[] = res.data;
+                setMessages(msgs.slice(-17));
+                setTimeout(() => {
+                    setMessagePing(messagePing + 1);
+                }, 2000)
+
+            })
+            .catch(err => console.log(err));
+    }, [messagePing])
 
     const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
@@ -30,9 +42,11 @@ export default function Chat({ messages }: ChatProps) {
                 time: new Date().toLocaleString()
             }
 
+            setMessages([...messages, msg]);
             setMessage("");
             postMessage(msg)
-                .then(() => {})
+                .then(() => {
+                })
                 .catch(err => console.log(err));
         }
     }

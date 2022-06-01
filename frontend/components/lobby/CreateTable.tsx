@@ -42,7 +42,7 @@ export default function CreateTable({}: CreateTableProps) {
 
         postTable(table)
             .then(_ => {
-                createNewGame(table.id, user?.displayName ?? 'Anonymous', user?.photoURL ?? '')
+                createNewGame(table.id, user)
                     .then(_ => {
                         Router.push(`/game/${table.id}`);
                         setDisableButton(false);

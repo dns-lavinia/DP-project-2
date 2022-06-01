@@ -23,21 +23,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === 'PUT') {
-        const { gameId } = req.query;
+        const { gameId, method } = req.query;
         const { joined, player } = req.body;
+
+        console.log(method)
         
         const { db, client } = await connectToMongo();
 
         const collection = db.collection('game');
 
         const result = await collection.updateOne(
-            {gameId: gameId, "players.id": `${joined-1}`}, 
-            {$set: {
-                joined: joined,
-                'players.$.name': player.name,
-                'players.$.photo': player.photo
+            {gameId: gameId}, 
+            {
+                $set: {
+                    joined: joined
+                },
+                $push: {
+                    players: player
+                }
             }
-        })
+        )
 
         client.close()
 
@@ -58,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const collection = db.collection('game');
 
-        const result = await collection.deleteOne({ id: gameId });
+        const result = await collection.deleteOne({ gameId: gameId });
 
         client.close()
 

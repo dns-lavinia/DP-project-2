@@ -13,19 +13,9 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-    const [messages, setMessages] = useState<IMessage[]>([]);
     const [loginModal, setLoginModal] = useState(false);
 
-    const { user } = useUser();
-
-    useEffect(() => {
-        getMessages()
-            .then(res => {
-                const msgs: IMessage[] = res.data;
-                setMessages(msgs.slice(-17));
-            })
-            .catch(err => console.log(err));
-    }, [])
+    const { user, guest } = useUser();
 
     return (
         <div className="w-full h-screen max-h-screen bg-dark-1 text-white font-site flex flex-col">
@@ -51,24 +41,22 @@ export default function Layout({ children }: LayoutProps) {
                         )}
                         <div className="flex flex-col w-96">
                             <div className="w-full h-24 bg-dark-3 border-b border-gray-900">
-                                {user ?
-                                    <UserStatus 
-                                        name={user.displayName}
-                                        status={"Online"}
-                                        image={user.photoURL}
-                                    /> :
+                                {guest ?
                                     <div className='flex items-center justify-center h-full text-3xl'>
                                         <button className='px-5 py-3 rounded-md transition-colors duration-150 ease-linear bg-dark-1 hover:bg-purple-300 cursor-pointer'
                                             onClick={() => setLoginModal(true)}
                                         >
                                             Log In / Sign Up
                                         </button>
-                                    </div>
+                                    </div> :
+                                    <UserStatus 
+                                        name={user.displayName}
+                                        status={"Online"}
+                                        image={user.photoURL}
+                                    /> 
                                 }
                             </div>
-                            <Chat 
-                                messages={messages}
-                            />
+                            <Chat />
                         </div>
                         <div className="w-full h-full bg-dark-4">
                             {children}
