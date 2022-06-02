@@ -1,6 +1,5 @@
 import { LogoutIcon } from "@heroicons/react/outline";
 import { useUser } from "contexts/UserContext";
-import { randomTailwindColor } from "utils/random";
 import Router from "next/router";
 
 interface UserStatus {
