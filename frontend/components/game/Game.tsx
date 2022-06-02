@@ -1,3 +1,4 @@
+import { GameContext } from "contexts/GameContext"
 import { useUser } from "contexts/UserContext"
 import { useEffect, useState } from "react"
 import { getGameState } from "services/game"
@@ -7,6 +8,7 @@ import Buttons from "./Buttons"
 import Hand from "./Hand"
 import Player from "./Player"
 import ScoreBoard from "./ScoreBoard"
+import Trump from "./Trump"
 
 interface GameProps {
     id: string;
@@ -21,12 +23,6 @@ export default function Game({ id, table }: GameProps) {
     const [gamePoll, setGamePoll] = useState(0);
 
     const { user } = useUser();
-
-    console.log(playerIndex)
-
-    // useEffect(() => {
-
-    // }, [])
 
     useEffect(() => {
         getGameState(id)
@@ -47,27 +43,30 @@ export default function Game({ id, table }: GameProps) {
 
     return (
         <div className="relative w-full h-full">
-            {isLoading || <>
-                <div className="absolute h-full w-full flex items-center justify-center">
-                    <div className="relative h-3/4 aspect-square bg-dark-2 rounded-full">
-                        <Player position={-playerIndex+0} player={state.players[0]} isJoined={state.joined > 0}/>
-                        <Player position={-playerIndex+1} player={state.players[1]} isJoined={state.joined > 1}/>
-                        <Player position={-playerIndex+2} player={state.players[2]} isJoined={state.joined > 2}/>
-                        <Player position={-playerIndex+3} player={state.players[3]} isJoined={state.joined > 3}/>
+            {isLoading || 
+                <GameContext.Provider value={{game: state, table: table, id: id}}>
+                    <div className="absolute h-full w-full flex items-center justify-center">
+                        <div className="relative h-3/4 aspect-square bg-dark-2 rounded-full">
+                            <Player position={-playerIndex+0} index={0} isJoined={state.joined > 0}/>
+                            <Player position={-playerIndex+1} index={1} isJoined={state.joined > 1}/>
+                            <Player position={-playerIndex+2} index={2} isJoined={state.joined > 2}/>
+                            <Player position={-playerIndex+3} index={3} isJoined={state.joined > 3}/>
+                            <Trump trump={state.round.trump} />
+                        </div>
                     </div>
-                </div>
-                <Auction 
-                    value={state.round.auction.value}
-                    playerIndex={playerIndex}
-                    playerTurn={state.round.playerTurn}
-                    turn={state.round.turn}
-                />
-                {/* <Hand 
-                    cards={state.round.playerCards[playerIndex]}
-                /> */}
-                <ScoreBoard team1Points={state.round.team1Points} team1Score={state.team1Score} team2Points={state.round.team2Points} team2Score={state.team2Score}/>
-                <Buttons isCheatMode={true} joined={1} id={id}/>
-            </>}
+                    <Auction 
+                        bidMax={state.round.auction.value}
+                        playerIndex={playerIndex}
+                        trick={state.round.trick}
+                        isVisible={playerIndex === state.round.playerTurn && state.round.trick === 0}
+                    />
+                    <Hand 
+                        playerIndex={playerIndex}
+                    />
+                    <ScoreBoard team1Points={state.round.team1Points} team1Score={state.team1Score} team2Points={state.round.team2Points} team2Score={state.team2Score}/>
+                    <Buttons isCheatMode={table.cheating} joined={state.joined} id={id}/>
+                </GameContext.Provider>
+            }
         </div>
     )
 }

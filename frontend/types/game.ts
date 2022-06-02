@@ -17,15 +17,6 @@ export interface IMessage {
     image?: string;
 }
 
-export interface IGame {
-    gameId: string;
-    team1Score: number;
-    team2Score: number;
-    joined: number;
-    players: IUser[]
-    round: IGameRound;
-}
-
 export interface IUser {
     uid: string;
     name: string | null;
@@ -37,15 +28,27 @@ export interface ICard {
     value: number;
 }
 
+export interface IGame {
+    gameId: string;
+    team1Score: number;
+    team2Score: number;
+    joined: number;
+    players: IUser[]
+    round: IGameRound;
+}
+
 export interface IGameRound{
+    trick: number;
     turn: number;
     playerTurn: number;
+    openingPlayer: number;
     playerCards: ICard[][];
+    playedCards: ICard[];
     auction: {
-        playerAuction: number[];
+        bids: number[];
         value: number;
     }
-    trumpCard: string;
+    trump: string;
     team1Points: number;
     team2Points: number;
     team1Cheated: boolean;

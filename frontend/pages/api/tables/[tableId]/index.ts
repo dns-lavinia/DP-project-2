@@ -7,9 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'GET') {
         const { tableId } = req.query;
 
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('tables');
+        const { collection, client } = await connectToMongo('tables');
         
         const result = await collection.findOne({ id: tableId });
 
@@ -27,9 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { tableId } = req.query;
         const { joined } = req.body;
 
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('tables');
+        const { collection, client } = await connectToMongo('tables');
 
         const result = await collection.updateOne({id: tableId}, {$set: {joined : joined}})
 
@@ -48,9 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'DELETE') {
         const { tableId } = req.query;
 
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('tables');
+        const { collection, client } = await connectToMongo('tables');
 
         const result = await collection.deleteOne({ id: tableId });
 

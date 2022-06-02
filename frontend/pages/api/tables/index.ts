@@ -4,17 +4,13 @@ import { connectToMongo } from 'utils/mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
-        
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('tables');
+        const { collection, client } = await connectToMongo('tables');
 
         const result = await collection.find({}).toArray();
 
         client.close()
 
         res.status(200).json(result.map(table => ({
-            // id: table._id.toString(),
             id: table.id,
             gameMode: table.gameMode,
             name: table.name,
@@ -30,9 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const data = req.body;
 
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('tables');
+        const { collection, client } = await connectToMongo('tables');
 
         const result = await collection.insertOne(data)
 

@@ -22,7 +22,7 @@ export async function postTable(table: ITable) {
 
 export async function joinTable(id: string, user: User, joined: number) {
     const url1 = `http://localhost:3000/api/tables/${id}`;
-    const url2 = `http://localhost:3000/api/game/${id}?method=JOIN`;
+    const url2 = `http://localhost:3000/api/game/${id}/join`;
 
     const table = {
         joined: joined + 1,
@@ -59,7 +59,7 @@ export async function leaveTable(id: string, playerId: string, joined: number) {
     }
 
     const url1 = `http://localhost:3000/api/tables/${id}`;
-    const url2 = `http://localhost:3000/api/game/${id}?method=LEAVE`;
+    const url2 = `http://localhost:3000/api/game/${id}/leave`;
 
     const table = {
         joined: joined - 1,

@@ -6,9 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const data = req.body;
     
-        const { db, client } = await connectToMongo();
-    
-        const collection = db.collection('game');
+        const { collection, client } = await connectToMongo('game');
     
         const result = await collection.insertOne(data)
     

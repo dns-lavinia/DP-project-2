@@ -5,9 +5,7 @@ import { connectToMongo } from 'utils/mongodb';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('chat');
+        const { collection, client } = await connectToMongo('chat');
 
         const result = await collection.find({}).toArray();
 
@@ -24,9 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const data = req.body;
 
-        const { db, client } = await connectToMongo();
-
-        const collection = db.collection('chat');
+        const { collection, client } = await connectToMongo('chat');
 
         const result = await collection.insertOne(data)
 
