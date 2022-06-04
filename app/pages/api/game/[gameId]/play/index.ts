@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ...( (team2Cheated) && {'round.team2Cheated': true} ),
                 },
                 $push: {
-                    'round.playedCards': card,
+                    ...( (turn !== 3) && {'round.playedCards': card}),
                 },
                 $pull: {
                     [`round.playerCards.${playerTurn}`]: {suit: card.suit, value: card.value},
