@@ -9,6 +9,8 @@ interface GamePageProps {
 }
 
 export default function GamePage({ id, table }: GamePageProps) {
+    console.log(id);
+
     return (
         // <Game id={id} table={table}/>
         <div>
@@ -24,7 +26,7 @@ export const getServerSideProps = async (context: NextPageContext) => {
     
     return {
         props: {
-            // id: gameId as string,
+            id: gameId as string,
             // table: table.data
         }
     }
