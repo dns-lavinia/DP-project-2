@@ -80,9 +80,9 @@ export default function Game({ id, table }: GameProps) {
             setGameOver(gameover);
         })
 
-        // gameSocket.on('kick', () => {
-        //     handleExit()
-        // })
+        gameSocket.on('kick', () => {
+            handleExit()
+        })
 
         gameSocket.on('game-unknown', _ => {
             console.log('game-unknown' )

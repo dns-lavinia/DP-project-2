@@ -63,11 +63,11 @@ export default function SocketHandler(req: any, res: any) {
                 io.of('/game').to(gameId).emit('game-update', state[gameId])
             })
 
-            // socket.on('leave-game', gameId => {
-            //     console.log('leave-game', gameId)
-            //     socket.leave(gameId)
-            //     io.of('/game').to(gameId).emit('kick')
-            // })
+            socket.on('leave-game', gameId => {
+                console.log('leave-game', gameId)
+                socket.leave(gameId)
+                io.of('/game').to(gameId).emit('kick')
+            })
 
             socket.on('request-game-state', gameId => {
                 console.log('request-game-state', gameId)
