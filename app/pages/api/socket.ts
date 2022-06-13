@@ -80,7 +80,9 @@ export default function SocketHandler(req: any, res: any) {
                 io.of('/game').to(gameId).emit('game-update', state[gameId]);
             })
 
-            socket.on('play-card', async ({gameId, playerTurn, cardIndex, card, isCheating, scoreToWin}) => {
+            socket.on('play-card', async ({gameId, playerTurn, playerIndex, cardIndex, card, isCheating, scoreToWin}) => {
+                if ( playerIndex !== playerTurn ) return
+
                 console.log('play-card', gameId, playerTurn, cardIndex, card, isCheating)
                 const isTrickOver = playCard(state[gameId], playerTurn, cardIndex, card, isCheating)
                 io.of('/game').to(gameId).emit('game-update', state[gameId]);

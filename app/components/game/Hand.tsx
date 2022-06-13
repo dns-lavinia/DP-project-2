@@ -22,7 +22,8 @@ export default function Hand({ playerIndex }: HandProps) {
         // setIsLoading(true);
         gameSocket.emit('play-card', {
             gameId: id,
-            playerTurn, 
+            playerTurn,
+            playerIndex,
             cardIndex: index, 
             card, 
             isCheating, 
