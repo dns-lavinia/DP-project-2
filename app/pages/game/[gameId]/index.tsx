@@ -10,19 +10,22 @@ interface GamePageProps {
 
 export default function GamePage({ id, table }: GamePageProps) {
     return (
-        <Game id={id} table={table}/>
+        // <Game id={id} table={table}/>
+        <div>
+            HATZ
+        </div>
     )
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
     const { gameId } = context.query;
 
-    const table = await getTable(gameId as string);
+    // const table = await getTable(gameId as string);
     
     return {
         props: {
-            id: gameId as string,
-            table: table.data
+            // id: gameId as string,
+            // table: table.data
         }
     }
 }
