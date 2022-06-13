@@ -1,33 +1,36 @@
 import Game from "components/game/Game";
 import { NextPageContext } from "next";
+import { useEffect, useState } from "react";
 import { getTable } from "services/table";
 import { ITable } from "types/game";
 
 interface GamePageProps {
     id: string;
-    table: ITable;
 }
 
-export default function GamePage({ id, table }: GamePageProps) {
-    console.log(id);
+export default function GamePage({ id }: GamePageProps) {
+    const [table, setTable] = useState<ITable>();
+
+    useEffect(() => {
+        getTable(id)
+            .then(res => setTable(res.data))
+            .catch(err => console.log(err));
+
+    }, [id]);
 
     return (
-        // <Game id={id} table={table}/>
-        <div>
-            HATZ
-        </div>
+        <>
+            {table && <Game id={id} table={table} />}
+        </>
     )
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
     const { gameId } = context.query;
-
-    // const table = await getTable(gameId as string);
     
     return {
         props: {
-            id: gameId as string,
-            // table: table.data
+            id: gameId as string
         }
     }
 }
