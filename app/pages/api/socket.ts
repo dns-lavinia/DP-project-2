@@ -6,6 +6,8 @@ import { createGame } from "utils/game_moves";
 const state: {[key: string]: IGame} = {}
 const rooms: {[key: string]: string}  = {}
 
+const numbers: {[key: string]: number} = {}
+
 export default function SocketHandler(req: any, res: any) {
     if (res.socket.server.io) {
         console.log('Socket running')
@@ -31,7 +33,7 @@ export default function SocketHandler(req: any, res: any) {
                 state[gameId] = createGame(gameId)
                 state[gameId].players.push(user)
 
-                socket.number = 1;
+                numbers[socket.id] = 1;
                 socket.join(gameId)
             })
 
@@ -54,7 +56,7 @@ export default function SocketHandler(req: any, res: any) {
 
                 rooms[socket.id] = gameId
 
-                socket.number = room.size + 1;
+                numbers[socket.id] = room.size + 1;
                 socket.join(gameId)
 
                 state[gameId].players.push(user)
@@ -69,7 +71,7 @@ export default function SocketHandler(req: any, res: any) {
 
             socket.on('request-game-state', gameId => {
                 console.log('request-game-state', gameId)
-                socket.emit('game-setup', {game: state[gameId], index: socket.number - 1});
+                socket.emit('game-setup', {game: state[gameId], index: numbers[socket.id] - 1});
             })
 
             socket.on('play-auction', ({gameId, playerTurn, bid})  => {
