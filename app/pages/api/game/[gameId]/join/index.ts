@@ -4,7 +4,7 @@ import { connectToMongo } from 'utils/mongodb';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'PUT') {
         const { gameId } = req.query;
-        const { joined, player } = req.body;
+        const { player } = req.body;
 
         const { collection, client } = await connectToMongo('game');
 
@@ -12,11 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             {
                 gameId: gameId
             }, {
-                $set: {
-                    joined: joined
-                },
                 $push: {
                     players: player
+                },
+                $inc: {
+                    joined: 1
                 }
             }
         )

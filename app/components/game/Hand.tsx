@@ -1,8 +1,8 @@
 import { useGame } from "contexts/GameContext";
 import { useState } from "react";
-import { playCard } from "services/game";
 import { ICard } from "types/game";
-import { calculateTeamBonuses, canPlayerPlay, isCardCheating } from "utils/game_rules";
+import { canPlayerPlay, isCardCheating } from "utils/game_rules";
+import { gameSocket } from "utils/sockets";
 import Card from "./Card";
 
 interface HandProps {
@@ -10,22 +10,24 @@ interface HandProps {
 }
 
 export default function Hand({ playerIndex }: HandProps) {
-    const { id, table: { cheating }, game: {round: {trick, trump, turn, playerTurn, playerCards, playedCards, openingPlayer}} } = useGame()
+    const { id, table: { cheating, points }, game: {round: {trick, trump, turn, playerTurn, playerCards, playedCards}} } = useGame()
     const [isLoading, setIsLoading] = useState(false);
     const cards = playerCards[playerIndex]
 
     const disabled = !canPlayerPlay(trick, playerIndex, playerTurn)
 
     const handlePlayCard = (index: number, card: ICard, isCheating: boolean, isDisabled: boolean) => {
-        if (isDisabled) return
+        if (isDisabled) return;
 
-        const [team1Bonus, team2Bonus, startingPlayer] = calculateTeamBonuses(card, playerCards[playerTurn], playedCards, trick, turn, playerTurn, openingPlayer, trump) 
-        const team1Cheated = isCheating && (playerIndex === 0 || playerIndex === 2);
-        const team2Cheated = isCheating && (playerIndex === 1 || playerIndex === 3);
-
-        setIsLoading(true);
-        playCard(id, card, trick, turn, playerTurn, team1Bonus, team2Bonus, team1Cheated, team2Cheated, startingPlayer)
-            .catch(() => setIsLoading(false))
+        // setIsLoading(true);
+        gameSocket.emit('play-card', {
+            gameId: id,
+            playerTurn, 
+            cardIndex: index, 
+            card, 
+            isCheating, 
+            scoreToWin: points
+        })
     }
 
     return (

@@ -11,12 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         client.close()
 
-        res.status(200).json(result.map(message => ({
-            name: message.name,
-            message: message.message,
-            time: message.time,
-            image: message.image
-        })))
+        res.status(200).json(result)
     }
 
     if (req.method === 'POST') {

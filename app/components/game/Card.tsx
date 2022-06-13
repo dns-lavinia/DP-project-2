@@ -31,7 +31,7 @@ interface CardImageProps {
     name: string
 }
 
-const CardImage = ( {name }: CardImageProps ) => (
+const CardImage = ( { name }: CardImageProps ) => (
     <div className="w-56 h-96 rounded-xl border border-purple-300 flex flex-col divide-y divide-purple-300 justify-center overflow-hidden">
         <div>
             <img src={`/${name}.png`} title="card"/>

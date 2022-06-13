@@ -1,77 +1,44 @@
 import axios from 'axios';
+import { SITE_URL } from 'constants/site_contants';
 import { User } from 'firebase/auth';
-import { ITable } from 'types/game';
+import { ITable, IUser } from 'types/game';
 
 export async function getTables() {
-    const url = 'http://localhost:3000/api/tables';
+    const url = `${SITE_URL}/api/tables`;
 
     return await axios.get(url)
 }
 
 export async function getTable(id: string) {
-    const url = `http://localhost:3000/api/tables/${id}`;
+    const url = `${SITE_URL}/api/tables/${id}`;
 
     return await axios.get(url)
 }
 
 export async function postTable(table: ITable) {
-    const url = 'http://localhost:3000/api/tables';
+    const url = `${SITE_URL}/api/tables`;
 
     return await axios.post(url, table)
 }
 
-export async function joinTable(id: string, user: User, joined: number) {
-    const url1 = `http://localhost:3000/api/tables/${id}`;
-    const url2 = `http://localhost:3000/api/game/${id}/join`;
+export async function joinTable(id: string, user: IUser) {
+    const url = `${SITE_URL}/api/tables/${id}/join`;
 
-    const table = {
-        joined: joined + 1,
-    }
-
-    const game = {
-        joined: joined + 1,
-        player: {
-            uid: user.uid,
-            name: user.displayName,
-            photo: user.photoURL,
-        }
-    }
-
-    return await Promise.all([
-        axios.put(url1, table),
-        axios.put(url2, game)
-    ])
+    return await axios.put(url, { user })
 }
 
 async function deleteTable(id: string) {
-    const url1 = `http://localhost:3000/api/tables/${id}`;
-    const url2 = `http://localhost:3000/api/game/${id}`;
+    const url = `${SITE_URL}/api/tables/${id}`;
 
-    return await Promise.all([
-        axios.delete(url1),
-        axios.delete(url2)
-    ])
+    return await axios.delete(url)
 }
 
 export async function leaveTable(id: string, playerId: string, joined: number) {
-    if (joined === 1) {
+    // if (joined === 1) {
         return await deleteTable(id)
-    }
+    // }
 
-    const url1 = `http://localhost:3000/api/tables/${id}`;
-    const url2 = `http://localhost:3000/api/game/${id}/leave`;
+    const url = `${SITE_URL}/api/tables/${id}/leave`;
 
-    const table = {
-        joined: joined - 1,
-    }
-
-    const game = {
-        joined: joined - 1,
-        playerId: playerId,
-    }
-
-    return await Promise.all([
-        axios.put(url1, table),
-        axios.put(url2, game)
-    ])
+    return axios.put(url, {})
 }

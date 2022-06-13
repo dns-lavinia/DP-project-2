@@ -1,20 +1,16 @@
 import { useUser } from "contexts/UserContext";
+import { IMessage } from "types/game";
 
-interface MessageProps {
-    image?: string;
-    name: string;
-    message: string;
-    time: string;
-}
+interface MessageProps extends IMessage {}
 
-export default function Message({ image, name, message, time }: MessageProps) {
+export default function Message({ uid, image, name, message, time }: MessageProps) {
     const { user } = useUser();
 
     const timeHourMin = time.match(/\d{1,2}:\d{2}/)?.[0];
     const timeMonthDay = time.match(/\d{1,2}\/\d{2}/)?.[0];
     const timeAMPM = time.match(/(AM|PM)/)?.[0];
 
-    if (name === user?.displayName) {
+    if (uid === user?.uid) {
         return (
             <div className='flex flex-row-reverse gap-2 items-end'>
                 {image ? 

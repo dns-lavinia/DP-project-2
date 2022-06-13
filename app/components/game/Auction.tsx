@@ -1,6 +1,6 @@
 import { useGame } from "contexts/GameContext";
 import { useState } from "react";
-import { playAuction } from "services/game";
+import { gameSocket } from "utils/sockets";
 
 interface AuctionProps {
     bidMax: number;
@@ -15,8 +15,8 @@ export default function Auction({ bidMax, playerIndex, trick, isVisible }: Aucti
 
     const handleBid = (bid: number) => {
         setIsLoading(true);
-        playAuction(id, playerTurn, bid, bids, turn)
-            .catch(_ => setIsLoading(false));
+        gameSocket.emit('play-auction', {gameId: id, playerTurn, bid})
+        setIsLoading(false);
     }
 
     return (

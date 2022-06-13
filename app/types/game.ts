@@ -11,6 +11,7 @@ export interface ITable {
 }
 
 export interface IMessage {
+    uid: string;
     name: string;
     message: string;
     time: string;
@@ -35,6 +36,7 @@ export interface IGame {
     joined: number;
     players: IUser[]
     round: IGameRound;
+    numRound: number;
 }
 
 export interface IGameRound{
@@ -47,6 +49,7 @@ export interface IGameRound{
     auction: {
         bids: number[];
         value: number;
+        winningTeam: number;
     }
     trump: string;
     team1Points: number;

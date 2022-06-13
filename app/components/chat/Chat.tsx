@@ -1,3 +1,4 @@
+import io, { Socket } from 'socket.io-client'
 import TextField from "components/common/TextField"
 import { useUser } from "contexts/UserContext";
 import { Router } from "next/router";
@@ -6,61 +7,68 @@ import { getMessages, postMessage } from "services/chat";
 import { IMessage } from "types/game";
 import Message from "./Message"
 
+let socket: Socket;
+
 export default function Chat() {
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [message, setMessage] = useState("");
-    const [messagePing, setMessagePing] = useState(0);
+    
     const { user } = useUser();
 
-    
     useEffect(() => {
         getMessages()
             .then(res => {
                 const msgs: IMessage[] = res.data;
-                setMessages(msgs.slice(-17));
-                setTimeout(() => {
-                    setMessagePing(messagePing + 1);
-                }, 2000)
-
+                setMessages(msgs);
+                initializeSocket()
             })
-            .catch(err => console.log(err));
-    }, [messagePing])
+    }, [])
+
+    const initializeSocket = async () => {
+        await fetch('api/socket');
+        socket ??= io('/chat')
+
+        socket.on('connect', () => {
+            // console.log('connected')
+        })
+
+        socket.on('message-received', ({messages, message}) => {
+            setMessages([...messages, message])
+        })
+    }
 
     const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             if (message.trim().length === 0) return;
 
-            const msg = user ? {
-                image: user.photoURL ?? undefined,
-                name: user.displayName ?? 'Anonymous',
-                message: message,
-                time: new Date().toLocaleString()
-            } : {
-                image: undefined,
-                name: 'Anonymous',
+            const msg = {
+                uid: user.uid,
+                image: user?.photoURL ?? undefined,
+                name: user?.displayName ?? 'Anonymous',
                 message: message,
                 time: new Date().toLocaleString()
             }
 
-            setMessages([...messages, msg]);
+            setMessages([...messages, msg])
             setMessage("");
+            socket.emit('message-sent', {messages, message: msg});
             postMessage(msg)
-                .then(() => {
-                })
+                .then(() => {})
                 .catch(err => console.log(err));
         }
     }
 
     return (
-        <div className="w-full h-full flex flex-col justify-end">
-            <div className="flex flex-col p-2 gap-2">
-                {messages.map(({image, name, message, time}, index) => (
+        <div className="w-full h-full flex flex-col justify-end overflow-hidden">
+            <div className="flex flex-col p-2 gap-2 overflow-y-auto">
+                {messages.map(({uid, image, name, message, time}, index) => (
                     <Message 
                         key={index}
                         image={image}
                         name={name}
                         message={message}
                         time={time}
+                        uid={uid}
                     />
                 ))}
             </div>

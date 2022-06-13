@@ -1,6 +1,6 @@
 import { ICard } from "types/game";
 
-export function shuffleCards(){
+export function shuffleCards() {
     const suits = ['R', 'V', 'D', 'G'];
     const values = [0, 2, 3, 4, 10, 11];
 
@@ -29,7 +29,7 @@ function check(p1c: ICard[], p2c: ICard[], p3c: ICard[], p4c: ICard[]) {
     return checkNines(p1c) && checkNines(p2c) && checkNines(p3c) && checkNines(p4c);
 }
 
-function checkNines(deck: ICard[]){
+function checkNines(deck: ICard[]) {
     let nines = 0;
     for (let card of deck) {
         if (card.value === 0) {
@@ -73,7 +73,7 @@ function findWinningCardIndex(board: ICard[], trump: string) {
         const card = board[i];
         const winningCard = board[winningCardIndex];
 
-        if (card.suit === trump) {
+        if (winningCard.suit !== trump && card.suit === trump) {
             winningCardIndex = i;
         }
         else if (card.suit === winningCard.suit && card.value > winningCard.value) {
@@ -89,32 +89,47 @@ function findPair(card: ICard, playerCards: ICard[]) {
     return playerCards.find(c => c.suit === card.suit && c.value === pairValue);
 }
 
-export function calculateTeamBonuses(card: ICard, playerCards: ICard[], playedCards: ICard[], trick: number, turn: number, playerTurn: number, openingPlayer: number, trump: string) {
-    // end of trick
-    if ( turn === 3 ) {
-        const newPlayedCards = [...playedCards, card];
-        const totalPoints = newPlayedCards.reduce((acc, curr) => acc + curr.value, 0);
-        const winningCardIndex = findWinningCardIndex(newPlayedCards, trump);
-
-        const winningPlayerIndex = (4 + winningCardIndex - openingPlayer) % 4;
-
-        const team1Bonus = (winningPlayerIndex === 0 || winningPlayerIndex === 2) ? totalPoints : 0;
-        const team2Bonus = (winningPlayerIndex === 1 || winningPlayerIndex === 3) ? totalPoints : 0;
-
-        return [team1Bonus, team2Bonus, winningPlayerIndex];
-    }
-
+export function calculatePairBonus(card: ICard, playerCards: ICard[], trick: number, turn: number, playerTurn: number, trump: string) {
+    if (turn !== 0) return [0, 0]
+    
     if (card.value != 3 && card.value != 4) {
-        return [0, 0, 0];
+        return [0, 0];
     }
 
     if ( findPair(card, playerCards) ) {
-        const isTrumpCard = card.suit === trump;
-        const team1Bonus = (playerTurn === 0 || playerTurn === 2) ? (isTrumpCard ? 40 : 20) : 0;
-        const team2Bonus = (playerTurn === 1 || playerTurn === 3) ? (isTrumpCard ? 40 : 20) : 0;
+        const isTrumpCard = card.suit === trump || (trick === 1 && turn === 0);
+        const pairPoints = (isTrumpCard ? 40 : 20);
+        const team1Bonus = (playerTurn === 0 || playerTurn === 2) ? pairPoints : 0;
+        const team2Bonus = (playerTurn === 1 || playerTurn === 3) ? pairPoints : 0;
         
-        return [team1Bonus, team2Bonus, 0];
+        return [team1Bonus, team2Bonus];
     }
 
-    return [0, 0, 0]
+    return [0, 0]
+}
+
+export function calculateTeamPoints(playedCards: ICard[], openingPlayer: number, trump: string) {
+    const totalPoints = playedCards.reduce((acc, curr) => acc + curr.value, 0);
+    const winningCardIndex = findWinningCardIndex(playedCards, trump);
+
+    const winningPlayerIndex = (winningCardIndex + openingPlayer) % 4;
+
+    const team1Bonus = (winningPlayerIndex === 0 || winningPlayerIndex === 2) ? totalPoints : 0;
+    const team2Bonus = (winningPlayerIndex === 1 || winningPlayerIndex === 3) ? totalPoints : 0;
+
+    return [team1Bonus, team2Bonus, winningPlayerIndex];
+}
+
+export function calculateTeamScores(team1Points: number, team2Points: number, teamAuctionWinner: number, auctionBet: number) {
+    let team1Score = Math.floor(team1Points / 33);
+    let team2Score = Math.floor(team2Points / 33);
+
+    if (teamAuctionWinner === 1) {
+        if (team1Score < auctionBet) team1Score = -auctionBet
+    }
+    else {
+        if (team2Score < auctionBet) team2Score = -auctionBet
+    }
+
+    return [team1Score, team2Score];
 }

@@ -4,9 +4,10 @@ import GameTableCard from "./GameTableCard";
 interface GameModeProps {
     title: React.ReactNode;
     games: ITable[];
+    onJoin: (id: string) => void;
 }
 
-export default function GameMode({ title, games }: GameModeProps) {
+export default function GameMode({ title, games, onJoin }: GameModeProps) {
 
     return (
         <div className="bg-dark-2 grow h-full py-2 rounded-xl flex flex-col items-center gap-8 basis-0">
@@ -24,7 +25,9 @@ export default function GameMode({ title, games }: GameModeProps) {
                         points={points}
                         password={password}
                         cheating={cheating}
-                        bigger={bigger} gameMode={0}              
+                        bigger={bigger}
+                        gameMode={0}
+                        onJoin={onJoin}
                     />
                 ))}
             </div>

@@ -12,16 +12,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         newBids[playerTurn] = bid
         const maxBid = Math.max(...newBids)
         const openingPlayer = newBids.indexOf(maxBid)
+        const winningTeam = (openingPlayer === 0 || openingPlayer === 2) ? 1 : 2
 
         const result = (turn + 1 < 4)
             ? await collection.updateOne({
                     gameId: gameId,
                 }, {
                     $set: {
-                        'round.turn': turn + 1,
                         'round.playerTurn': (playerTurn + 1) % 4,
                         'round.auction.bids': newBids,
                         'round.auction.value': maxBid,
+                    },
+                    $inc: {
+                        'round.turn': 1,
                     }
                 })
             : await collection.updateOne({
@@ -33,7 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     'round.playerTurn': openingPlayer,
                     'round.openingPlayer': openingPlayer,
                     'round.auction.bids': newBids,
-                    'round.auction.value': maxBid
+                    'round.auction.value': maxBid,
+                    'round.auction.winningTeam': winningTeam
                 }
             })
 

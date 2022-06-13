@@ -1,26 +1,18 @@
 import { MinusIcon, XIcon } from "@heroicons/react/solid";
-import axios from "axios";
-import { useUser } from "contexts/UserContext";
-import Router from "next/router";
-import { leaveTable } from "services/table";
+import { gameSocket } from "utils/sockets";
 
 interface ButtonsProps {
-    isCheatMode: boolean,
-    joined : number,
-    id: string
+    playerIndex: number;
+    isCheatMode: boolean;
+    joined : number;
+    id: string;
+    onExit: () => void;
 }
 
-export default function Buttons({ isCheatMode, joined, id }: ButtonsProps) {
-    const { user } = useUser();
-
-    const handleLeaveGame = async () => {
-        leaveTable(id, user.uid, joined)
-
-        Router.push("/");
-    }
+export default function Buttons({ isCheatMode, joined, playerIndex, id, onExit }: ButtonsProps) {
 
     const handleCheating = () => {
-        
+        gameSocket.emit('accuse-cheating', {gameId: id, playerIndex})
     }
     
     return (
@@ -28,7 +20,7 @@ export default function Buttons({ isCheatMode, joined, id }: ButtonsProps) {
             <div className="rounded-2xl bg-dark-1 p-4 w-min float-right">
                 <div className="flex flex-row-reverse gap-4">
                     <button className="border-2 rounded-full p-4 border-purple-300 hover:bg-purple-300 hover:text-dark-1"
-                        onClick={handleLeaveGame}
+                        onClick={onExit}
                         type="button"
                         title="Leave Game"
                     >

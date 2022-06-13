@@ -8,25 +8,24 @@ import { ITable } from "types/game";
 import { postTable } from "services/table";
 import Router from "next/router";
 import { useUser } from "contexts/UserContext";
-import { createNewGame } from "services/game";
 
 interface CreateTableProps {
-
+    onTableCreated: (table: ITable) => void;
 }
 
-export default function CreateTable({}: CreateTableProps) {
+export default function CreateTable({ onTableCreated }: CreateTableProps) {
     const [gameMode, setGameMode] = useState(2);
     const [points, setPoints] = useState(21);
     const [time, setTime] = useState(5);
     const [isIber, setIsIber] = useState(true);
     const [isCheating, setIsCheating] = useState(false);
     const [password, setPassword] = useState('');
-    const [disableButton, setDisableButton] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { user } = useUser();
     
     const handleCreateTable = async () => {
-        setDisableButton(true);
+        setIsLoading(true);
 
         const table: ITable = {
             gameMode,
@@ -40,18 +39,15 @@ export default function CreateTable({}: CreateTableProps) {
             bigger: isIber
         }
 
+        onTableCreated(table);
         postTable(table)
             .then(_ => {
-                createNewGame(table.id, user)
-                    .then(_ => {
-                        Router.push(`/game/${table.id}`);
-                        setDisableButton(false);
-                    })
-                    .catch(err => console.log(err));
+                Router.push(`/game/${table.id}`);
+                setIsLoading(false);
             })
             .catch(err => {
                 console.log(err);
-                setDisableButton(false);
+                setIsLoading(false);
             })
     }
 
@@ -168,7 +164,7 @@ export default function CreateTable({}: CreateTableProps) {
             <div className="flex justify-center">
                 <Button
                     onClick={handleCreateTable}
-                    disabled={disableButton}
+                    disabled={isLoading}
                 >
                     Create Table
                 </Button>

@@ -1,34 +1,41 @@
 import { LockClosedIcon, ClockIcon, StarIcon, MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/solid"
 import { UserIcon } from "@heroicons/react/outline"
-import type { ITable } from "types/game"
+import type { ITable, IUser } from "types/game"
 import Router from "next/router"
 import { joinTable } from "services/table"
 import { useUser } from "contexts/UserContext"
 
-interface GameTableCardProps extends ITable {}
+interface GameTableCardProps extends ITable {
+    onJoin: (id: string) => void;
+}
 
-export default function GameTableCard({ id, name, time, points, joined, password, cheating, bigger }: GameTableCardProps) {
+export default function GameTableCard({ id, name, time, points, joined, password, cheating, bigger, onJoin }: GameTableCardProps) {
     const full = joined === 4
     const transition = "transition-colors ease-in-out duration-300"
 
     const { user } = useUser()
 
-    const handleJoin = () => {
+    const handleJoinTable = () => {
         if (full) return
 
-        joinTable(id, user, joined)
-            .then(() => {
+        const usr: IUser = {
+            uid: user.uid,
+            name: user.displayName,
+            photo: user.photoURL,
+        }
+        
+        onJoin(id)
+        joinTable(id, usr)
+            .then(_ => {
                 Router.push(`/game/${id}`)
             })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(err => console.log(err))
     }
 
     return (
         <div className="w-full h-20 min-h-min">
             <div className={`group rounded-xl flex w-full h-full overflow-hidden cursor-pointer ${full && 'pointer-events-none'}`}
-                onClick={handleJoin}
+                onClick={handleJoinTable}
             >
                 <div className={`${full ? "bg-red-400" : "bg-purple-300"} w-3 ${transition} group-hover:bg-dark-1`} />
                 <div className={`py-2 px-3 bg-dark-1 grow grid grid-flow-row grid-cols-2 ${transition} group-hover:bg-purple-300`}>

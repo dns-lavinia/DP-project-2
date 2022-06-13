@@ -23,11 +23,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'PUT') {
         const { tableId } = req.query;
-        const { joined } = req.body;
 
         const { collection, client } = await connectToMongo('tables');
 
-        const result = await collection.updateOne({id: tableId}, {$set: {joined : joined}})
+        const result = await collection.updateOne(
+            {
+                id: tableId
+            }, {
+                $inc: {
+                    joined : 1
+                }
+            }
+        )
 
         client.close()
 

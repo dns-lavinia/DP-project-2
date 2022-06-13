@@ -1,22 +1,20 @@
+import { table } from 'console';
+import { MongoClient, ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongo } from 'utils/mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'PUT') {
-        const { gameId } = req.query;
-        const { joined, player } = req.body;
+        const { tableId } = req.query;
 
-        const { collection, client } = await connectToMongo('game');
+        const { collection, client } = await connectToMongo('tables');
 
         const result = await collection.updateOne(
             {
-                gameId: gameId
+                id: tableId
             }, {
-                $push: {
-                    players: player
-                },
                 $inc: {
-                    joined: -1
+                    joined : -1
                 }
             }
         )
