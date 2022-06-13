@@ -5,13 +5,13 @@ import { ICard, IGame } from "types/game";
 import { shuffleCards } from "utils/game_rules";
 
 export async function getGameState(id: string) {
-    const url = `${SITE_URL}/api/game/${id}`;
+    const url = `/api/game/${id}`;
 
     return await axios.get(url);
 }
 
 export async function createNewGame(id: string, user: User) {
-    const url = `${SITE_URL}/api/game`;
+    const url = `/api/game`;
 
     const cards = shuffleCards();
 
@@ -52,7 +52,7 @@ export async function createNewGame(id: string, user: User) {
 }
 
 export async function playAuction(id: string, playerTurn: number, bid: number, bids: number[], turn: number) {
-    const url = `${SITE_URL}/api/game/${id}/auction`;
+    const url = `/api/game/${id}/auction`;
 
     const data = {
         playerTurn,
@@ -76,7 +76,7 @@ export async function playCard(
     team2Cheated: boolean,
     openingPlayer: number
 ) {
-    const url = `${SITE_URL}/api/game/${id}/play`;
+    const url = `/api/game/${id}/play`;
 
     const data = {
         id,  
@@ -95,7 +95,7 @@ export async function playCard(
 }
 
 export async function endTrick(id: string, team1Bonus: number, team2Bonus: number, openingPlayer: number) {
-    const url = `${SITE_URL}/api/game/${id}/end-trick`;
+    const url = `/api/game/${id}/end-trick`;
 
     const data = {
         team1Bonus,
@@ -107,7 +107,7 @@ export async function endTrick(id: string, team1Bonus: number, team2Bonus: numbe
 }
 
 export async function endRound(id: string, numRound: number, team1Score: number, team2Score: number) {
-    const url = `${SITE_URL}/api/game/${id}/end-round`;
+    const url = `/api/game/${id}/end-round`;
 
     const data = {
         team1Score,
