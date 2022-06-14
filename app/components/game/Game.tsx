@@ -94,6 +94,11 @@ export default function Game({ id, table }: GameProps) {
             Router.push("/")
         })
 
+        gameSocket.on('unknown-user', _ => {
+            console.log('unknown-user')
+            Router.push("/")
+        })
+
         gameSocket.on('already-joined', _ => {
             console.log('already-joined')
         })

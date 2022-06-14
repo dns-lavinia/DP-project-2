@@ -83,7 +83,14 @@ export default function SocketHandler(req: any, res: any) {
             })
 
             socket.on('request-game-state', ({gameId, uid}) => {
-                socket.emit('game-setup', {game: state[gameId], index: users[uid].seat});
+                console.log('request-game-state', gameId, uid)
+                const user = users[uid]
+                if (!user) {
+                    socket.emit('unknown-user') 
+                    return
+                }
+
+                socket.emit('game-setup', {game: state[gameId], index: user.seat});
             })
 
             socket.on('play-auction', ({gameId, playerTurn, playerIndex, bid})  => {

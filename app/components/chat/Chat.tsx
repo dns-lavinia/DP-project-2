@@ -21,6 +21,7 @@ export default function Chat() {
             .then(res => {
                 const msgs: IMessage[] = res.data;
                 setMessages(msgs);
+                messageRef.current?.scrollIntoView({ behavior: 'smooth' })
                 initializeSocket()
             })
     }, [])
