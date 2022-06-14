@@ -1,8 +1,7 @@
 import io, { Socket } from 'socket.io-client'
 import TextField from "components/common/TextField"
 import { useUser } from "contexts/UserContext";
-import { Router } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getMessages, postMessage } from "services/chat";
 import { IMessage } from "types/game";
 import Message from "./Message"
@@ -12,6 +11,8 @@ let socket: Socket;
 export default function Chat() {
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [message, setMessage] = useState("");
+
+    const messageRef = useRef<HTMLInputElement>(null);
     
     const { user } = useUser();
 
@@ -34,6 +35,7 @@ export default function Chat() {
 
         socket.on('message-received', ({messages, message}) => {
             setMessages([...messages, message])
+            messageRef.current?.scrollIntoView({ behavior: 'smooth' })
         })
     }
 
@@ -71,6 +73,7 @@ export default function Chat() {
                         uid={uid}
                     />
                 ))}
+                <div ref={messageRef}/>
             </div>
             <div className="p-2">
                 <TextField
