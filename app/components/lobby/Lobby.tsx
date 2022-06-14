@@ -3,18 +3,21 @@ import { PlusIcon, UserIcon, UsersIcon } from "@heroicons/react/solid";
 import GameMode from "./GameMode";
 import { useEffect, useState } from "react";
 import Modal from "components/common/Modal";
-import CreateTable from "./CreateTable";
-import { getTables } from "services/table";
-import { ITable } from "types/game";
+import CreateTableForm from "./CreateTableForm";
+import { getTables, joinTable } from "services/table";
+import { ITable, IUser } from "types/game";
 import io, { Socket } from "socket.io-client";
 import Router from "next/router";
 import { gameSocket } from "utils/sockets";
 import { useUser } from "contexts/UserContext";
+import JoinTableForm from "./JoinTableForm";
 
 // let tableSocket: Socket;
 
 export default function Lobby() {
-    const [showModal, setShowModal] = useState(false);
+    const [showTableModal, setShowTableModal] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [table, setTable] = useState<ITable>({} as ITable);
     const [tables, setTables] = useState<ITable[]>([]);
 
     const [ping, setPing] = useState(0);
@@ -32,30 +35,11 @@ export default function Lobby() {
 
                 setTables(tables)
                 setTimeout(() => setPing(ping + 1), 1000)
-                // initializeSocket()
             })
     }, [ping])
 
-    // const initializeSocket = async () => {
-    //     await fetch('api/socket');
-    //     tableSocket ??= io('/table')
-
-    //     tableSocket.on('connect', () => {
-    //         // console.log('connected')
-    //     })
-
-    //     gameSocket.on('connect', () => {
-    //         // console.log('connected')
-    //     })
-
-    //     tableSocket.on('update-tables', ({tables, table}) => {
-    //         console.log('update-tables')
-    //         setTables([...tables, table])
-    //     })
-    // }
-
     const handleTableModal = () => {
-        setShowModal(true);
+        setShowTableModal(true);
     }
 
     const handleCreateTable = (table: ITable) => {
@@ -67,20 +51,46 @@ export default function Lobby() {
     }
 
     const handleJoinTable = (id: string) => {
-        gameSocket.emit('join-game', {gameId: id, user: {
+        const usr: IUser = {
             uid: user.uid,
             name: user.displayName,
             photo: user.photoURL,
-        }})
+        }
+
+        gameSocket.emit('join-game', {gameId: id, user: usr})
+        setShowPasswordModal(false);
+        
+        joinTable(id, usr)
+            .then(_ => {
+                Router.push(`/game/${id}`)
+            })
+            .catch(err => console.log(err))
+    }
+
+    const handleJoin = (table: ITable) => {
+        if (table.password !== "") {
+            setTable(table);
+            setShowPasswordModal(true);
+            return;
+        }
+        
+        handleJoinTable(table.id)
     }
 
     return (
         <div className="relative h-full">
-            {showModal && (
+            {showTableModal && (
                 <Modal
-                    onClose={() => setShowModal(false)}
+                    onClose={() => setShowTableModal(false)}
                 >
-                    <CreateTable onTableCreated={handleCreateTable} />
+                    <CreateTableForm onTableCreated={handleCreateTable} />
+                </Modal>
+            )}
+            {showPasswordModal && (
+                <Modal
+                    onClose={() => setShowPasswordModal(false)}
+                >
+                    <JoinTableForm table={table} onTableJoined={handleJoinTable} />
                 </Modal>
             )}
             <div className="flex flex-col gap-4 p-3 h-full">
@@ -99,7 +109,7 @@ export default function Lobby() {
                             <UserIcon className="w-16 text-purple-300" />
                         </div>}
                         games={tables1v1}
-                        onJoin={handleJoinTable}
+                        onJoin={handleJoin}
                     />
                     <GameMode title={
                         <div className="flex items-center gap-2">
@@ -110,7 +120,7 @@ export default function Lobby() {
                             <UserIcon className="w-16 text-purple-300" />
                         </div>}
                         games={tables1v1v1}
-                        onJoin={handleJoinTable}
+                        onJoin={handleJoin}
                     />
                     <GameMode title={
                         <div className="flex items-center gap-2">
@@ -119,7 +129,7 @@ export default function Lobby() {
                             <UsersIcon className="w-16 text-purple-300" />
                         </div>}
                         games={tables2v2}
-                        onJoin={handleJoinTable}
+                        onJoin={handleJoin}
                     />
                 </div>
             </div>

@@ -10,7 +10,7 @@ interface PlayerProps {
 }
 
 export default function Player({ position, index, isJoined }: PlayerProps) {
-    const { game } = useGame()
+    const { game: {round: { auction: { bids }, trick}, players, joined} } = useGame()
 
     const { height } = useWindowDimensions()
     
@@ -27,15 +27,15 @@ export default function Player({ position, index, isJoined }: PlayerProps) {
         <div className="absolute h-full w-full flex items-center justify-center">
             <div className="relative">
                 {isJoined ?
-                    <div className="relative w-36 h-36 rounded-full overflow-hidden"
+                    <div className="group relative w-36 h-36 rounded-full overflow-hidden"
                         style={style}
                     >
-                        <div className="absolute bg-dark-1 border-4 border-purple-300 w-full h-full rounded-full flex items-center justify-center text-7xl font-mono font-bold">
-                            {game.round.auction.bids[index]}
+                        <div className={`absolute transition-opacity ${(trick === 0 && joined === 4) || 'opacity-0'} bg-dark-1 border-4 border-purple-300 w-full h-full rounded-full flex items-center justify-center text-7xl font-mono font-bold`}>
+                            {bids[index]}
                         </div>
                         <img className="w-full h-full"
-                            src={game.players[index]?.photo ?? ''}
-                            alt={game.players[index]?.name ?? 'Anon'}
+                            src={players[index]?.photo ?? ''}
+                            alt={players[index]?.name ?? 'Anon'}
                         />
                     </div> :
                     <div className="w-36 h-36 bg-dark-1 rounded-full flex items-center justify-center"

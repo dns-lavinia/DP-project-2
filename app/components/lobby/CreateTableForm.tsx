@@ -52,7 +52,7 @@ export default function CreateTable({ onTableCreated }: CreateTableProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4 font-semibold text-4xl">
+        <div className="flex flex-col gap-4 font-semibold text-4xl justify-center">
             <div className="grid grid-cols-max-3 grid-flow-row gap-x-4 gap-y-4">
                 <div className="text-right">
                     Game Mode
@@ -161,14 +161,12 @@ export default function CreateTable({ onTableCreated }: CreateTableProps) {
                     onChange={setPassword}
                 />
             </div>
-            <div className="flex justify-center">
-                <Button
-                    onClick={handleCreateTable}
-                    disabled={isLoading}
-                >
-                    Create Table
-                </Button>
-            </div>
+            <Button
+                onClick={handleCreateTable}
+                disabled={isLoading}
+            >
+                Create Table
+            </Button>
         </div>
     )
 }

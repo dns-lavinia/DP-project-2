@@ -36,7 +36,7 @@ export default function Layout({ children }: LayoutProps) {
                             <Modal
                                 onClose={() => setLoginModal(false)}
                             >
-                                <Auth />
+                                <Auth onAuth={() => setLoginModal(false)} />
                             </Modal>
                         )}
                         <div className="flex flex-col w-96">

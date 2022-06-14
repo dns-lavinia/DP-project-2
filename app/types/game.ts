@@ -34,7 +34,7 @@ export interface IGame {
     team1Score: number;
     team2Score: number;
     joined: number;
-    players: IUser[]
+    players: (IUser | null)[];
     round: IGameRound;
     numRound: number;
 }

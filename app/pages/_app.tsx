@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Head>
                 <title>Cruce</title>
                 <link rel="icon" href="/favicon.ico" />
-                {/* <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" /> */}
+                <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
             </Head>
             <UserProvider>
                 <Layout>

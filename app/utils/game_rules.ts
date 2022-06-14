@@ -1,4 +1,4 @@
-import { ICard } from "types/game";
+import { ICard, IUser } from "types/game";
 
 export function shuffleCards() {
     const suits = ['R', 'V', 'D', 'G'];
@@ -132,4 +132,15 @@ export function calculateTeamScores(team1Points: number, team2Points: number, te
     }
 
     return [team1Score, team2Score];
+}
+
+export function getSeatsTaken(players: (IUser | null)[]) {
+    return players.reduce((acc, curr) => curr ? acc + 1 : acc, 0);
+}
+
+export function getNextEmptySeat(players: (IUser | null)[]) {
+    for (let i = 0; i < players.length; i++) {
+        if (!players[i]) return i;
+    }
+    return -1;
 }

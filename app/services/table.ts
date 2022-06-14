@@ -33,10 +33,10 @@ async function deleteTable(id: string) {
     return await axios.delete(url)
 }
 
-export async function leaveTable(id: string, playerId: string, joined: number) {
-    // if (joined === 1) {
+export async function leaveTable(id: string, joined: number) {
+    if (joined === 1) {
         return await deleteTable(id)
-    // }
+    }
 
     const url = `/api/tables/${id}/leave`;
 

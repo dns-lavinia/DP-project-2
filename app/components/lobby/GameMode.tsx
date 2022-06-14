@@ -4,7 +4,7 @@ import GameTableCard from "./GameTableCard";
 interface GameModeProps {
     title: React.ReactNode;
     games: ITable[];
-    onJoin: (id: string) => void;
+    onJoin: (table: ITable) => void;
 }
 
 export default function GameMode({ title, games, onJoin }: GameModeProps) {

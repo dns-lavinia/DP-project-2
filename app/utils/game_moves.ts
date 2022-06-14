@@ -10,7 +10,7 @@ export function createGame(id: string): IGame {
         team1Score: 0,
         team2Score: 0,
         joined: 1,
-        players: [],
+        players: [null, null, null, null],
         round: {
             trick: 0,
             turn: 0,
@@ -190,3 +190,19 @@ export function accuseCheating(state: IGame, playerIndex: number) {
         }
     }
 }
+
+export function leaveGame(state: IGame, playerIndex: number) {
+    const game = createGame(state.gameId)
+
+    const players = state.players;
+    players[playerIndex] = null;
+    const joined = state.joined - 1;
+
+    game.players = players;
+    game.joined = joined;
+
+    return game
+}
+
+
+    

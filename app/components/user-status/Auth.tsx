@@ -1,13 +1,17 @@
 import { useUser } from "contexts/UserContext"
 import Router from "next/router"
 
-export default function Auth() {
+interface AuthProps {
+    onAuth: () => void;
+}
+
+export default function Auth({ onAuth }: AuthProps) {
     const { logInGoogle } = useUser()
 
     const handleGoogleLogin = async () => {
         try {
             await logInGoogle()
-            Router.push('/')
+            onAuth()
         }
         catch (error) {
             console.log(error)
@@ -25,19 +29,44 @@ export default function Auth() {
     // }
 
     return (
-        <div className="flex flex-col gap-6 items-center">
-            <div className="text-5xl text-purple-300">
+        <div className="flex flex-col gap-8 items-center">
+            <div className="text-5xl font-black">
                 Cruce
             </div>
-            <button className="flex items-center justify-center gap-3 w-full px-6 py-2 mx-2 text-xl font-medium text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-400"
-                onClick={handleGoogleLogin}
-            >
-                <GoogleIcon />
-                <div className="hidden mx-2 sm:inline">Sign in with Google</div>
-            </button>
+            <div className="flex flex-col gap-3">
+                <AuthButton
+                    onClick={handleGoogleLogin}
+                    icon={<GoogleIcon />}
+                >
+                    <div className="hidden mx-2 sm:inline">Continue with Google</div>
+                </AuthButton>
+                <AuthButton
+                    onClick={handleGoogleLogin}
+                    icon={<TwitterIcon />}
+                >
+                    <div className="hidden mx-2 sm:inline">Continue with Twitter</div>
+                </AuthButton>
+            </div>
         </div>
     )
 }
+
+interface AuthButtonProps {
+    onClick: () => void
+    icon: React.ReactElement;
+    children: React.ReactNode | React.ReactNode[];
+}
+
+const AuthButton = ({ onClick, icon, children }: AuthButtonProps) => (
+    <button className="flex items-center justify-center gap-3 w-full px-6 py-3 mx-2 text-xl font-black text-white transition-colors duration-200 transform bg-dark-1 rounded-full border-2 hover:bg-blue-400"
+                onClick={onClick}
+    >
+        <div className="text-white">
+            {icon}
+        </div>
+        {children}
+    </button>
+)
 
 const GoogleIcon = () => (
     <svg className="h-6 w-6 fill-current stroke-current" viewBox="0 0 24 24">

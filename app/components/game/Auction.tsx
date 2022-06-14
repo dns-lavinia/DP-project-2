@@ -15,7 +15,7 @@ export default function Auction({ bidMax, playerIndex, trick, isVisible }: Aucti
 
     const handleBid = (bid: number) => {
         setIsLoading(true);
-        gameSocket.emit('play-auction', {gameId: id, playerTurn, bid})
+        gameSocket.emit('play-auction', {gameId: id, playerTurn, playerIndex, bid})
         setIsLoading(false);
     }
 

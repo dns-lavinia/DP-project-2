@@ -1,81 +1,94 @@
 import { Server, Socket } from "socket.io";
 import { IGame } from "types/game";
-import { accuseCheating, endGame, endRound, endTrick, playAuction, playCard } from "utils/game_moves";
+import { accuseCheating, endGame, endRound, endTrick, leaveGame, playAuction, playCard } from "utils/game_moves";
 import { createGame } from "utils/game_moves";
+import { getNextEmptySeat, getSeatsTaken } from "utils/game_rules";
 
-const state: {[key: string]: IGame} = {}
-const rooms: {[key: string]: string}  = {}
+const state: {[key: string]: IGame}   = {} // game_id -> game
 
-const numbers: {[key: string]: number} = {}
+const users: {
+    [key: string]: {   // user_id -> game_id, seat
+        room: string;
+        seat: number,
+    }
+} = {}
 
 export default function SocketHandler(req: any, res: any) {
-    if (res.socket.server.io) {
-        console.log('Socket running')
-    }
-    else {
-        console.log('Socket starting')
+    if (!res.socket.server.io) {
         const io = new Server(res.socket.server);
         res.socket.server.io = io;
 
         io.of('/chat').on('connection', (socket) => {
             socket.on('message-sent', ({messages, message}) => {
-                console.log('message-sent')
                 socket.broadcast.emit('message-received', {messages, message});
             })
         })
 
         io.of('/game').on('connection', (socket) => {
-            console.log('game', socket.id)
 
             socket.on('create-game', ({gameId, user}) => {
-                console.log('create-game', gameId)
-                rooms[socket.id] = gameId
                 state[gameId] = createGame(gameId)
-                state[gameId].players.push(user)
+                state[gameId].players[0] = user;
 
-                numbers[socket.id] = 1;
+                users[user.uid] = {
+                    room: gameId,
+                    seat: 0,
+                }
+
                 socket.join(gameId)
             })
 
             socket.on('join-game', ({gameId, user}) => {
                 const room = io.of('/game').adapter.rooms.get(gameId);
 
-                console.log('join-game', gameId, room)
-
                 if (!room) {
                     socket.emit('unknown-game');
                     return
                 }
 
-                const numClients = room.size;
+                const players = state[gameId].players;
 
-                if ( numClients > 4 ) {
-                    socket.emit('full-game');
+                if (players.find(p => p?.uid === user.uid)) {
+                    if (!room.has(socket.id)) {
+                        socket.join(gameId)
+                        socket.emit('already-joined');
+                    }
                     return
                 }
 
-                rooms[socket.id] = gameId
+                const seat = getNextEmptySeat(players);
 
-                numbers[socket.id] = room.size + 1;
+                if (seat === -1) {
+                    socket.emit('game-full');
+                    return
+                }
+
+                users[user.uid] = {
+                    room: gameId,
+                    seat: seat,
+                }
+
+                state[gameId].players[seat] = user;
+                state[gameId].joined++
+
                 socket.join(gameId)
-
-                state[gameId].players.push(user)
                 io.of('/game').to(gameId).emit('game-update', state[gameId])
             })
 
-            socket.on('leave-game', gameId => {
-                console.log('leave-game', gameId)
+            socket.on('leave-game', ({gameId, playerIndex}) => {
+                const game = leaveGame(state[gameId], playerIndex)
+                state[gameId] = game
                 socket.leave(gameId)
-                io.of('/game').to(gameId).emit('kick')
+                io.of('/game').to(gameId).emit('game-update', game)
             })
 
-            socket.on('request-game-state', gameId => {
-                console.log('request-game-state', gameId)
-                socket.emit('game-setup', {game: state[gameId], index: numbers[socket.id] - 1});
+            socket.on('request-game-state', ({gameId, uid}) => {
+                socket.emit('game-setup', {game: state[gameId], index: users[uid].seat});
             })
 
-            socket.on('play-auction', ({gameId, playerTurn, bid})  => {
-                console.log('play-auction', gameId, playerTurn, bid)
+            socket.on('play-auction', ({gameId, playerTurn, playerIndex, bid})  => {
+                if ( playerIndex !== playerTurn ) return
+
                 playAuction(state[gameId], playerTurn, bid)
                 io.of('/game').to(gameId).emit('game-update', state[gameId]);
             })
@@ -83,7 +96,6 @@ export default function SocketHandler(req: any, res: any) {
             socket.on('play-card', async ({gameId, playerTurn, playerIndex, cardIndex, card, isCheating, scoreToWin}) => {
                 if ( playerIndex !== playerTurn ) return
 
-                console.log('play-card', gameId, playerTurn, cardIndex, card, isCheating)
                 const isTrickOver = playCard(state[gameId], playerTurn, cardIndex, card, isCheating)
                 io.of('/game').to(gameId).emit('game-update', state[gameId]);
                 
@@ -102,7 +114,6 @@ export default function SocketHandler(req: any, res: any) {
             })
 
             socket.on('accuse-cheating', ({gameId, playerIndex}) => {
-                console.log('accuse-cheating', gameId, playerIndex)
                 accuseCheating(state[gameId], playerIndex)
                 io.of('/game').to(gameId).emit('game-update', state[gameId]);
             })

@@ -34,7 +34,7 @@ export default function Game({ id, table }: GameProps) {
 
     useEffect(() => {
         initializeSocket()
-        gameSocket.emit('request-game-state', id);
+        gameSocket.emit('request-game-state', {gameId: id, uid: user.uid});
     }, [])
 
     const initializeSocket = () => {
@@ -86,15 +86,17 @@ export default function Game({ id, table }: GameProps) {
 
         gameSocket.on('game-unknown', _ => {
             console.log('game-unknown' )
+            Router.push("/")
         })
 
         gameSocket.on('game-full', _ => {
             console.log('game-full')
+            Router.push("/")
         })
-    }
 
-    const handlePlay = () => {
-        gameSocket.emit('play-card', gameSocket.id)
+        gameSocket.on('already-joined', _ => {
+            console.log('already-joined')
+        })
     }
 
     const handleContinue = () => {
@@ -102,9 +104,9 @@ export default function Game({ id, table }: GameProps) {
     }
 
     const handleExit = () => {
-        gameSocket.emit('leave-game', id);
+        gameSocket.emit('leave-game', {gameId: id, playerIndex});
         Router.push("/")
-        leaveTable(id, '523', 2532);
+        leaveTable(id, state.joined);
     }
 
     return (
@@ -120,21 +122,14 @@ export default function Game({ id, table }: GameProps) {
                     />
                 </Modal>
             )}
-            {isLoading ?
-                <div>
-                    <button className="bg-dark-2"
-                        onClick={handlePlay}
-                    >
-                        PRESS
-                    </button>
-                </div> : 
+            {isLoading || 
                 <GameContext.Provider value={{game: state, table: table, id: id}}>
                     <div className="absolute h-full w-full flex items-center justify-center">
                         <div className="relative h-3/4 aspect-square bg-dark-2 rounded-full">
-                            <Player position={-playerIndex+0} index={0} isJoined={state.players.length > 0}/>
-                            <Player position={-playerIndex+1} index={1} isJoined={state.players.length > 1}/>
-                            <Player position={-playerIndex+2} index={2} isJoined={state.players.length > 2}/>
-                            <Player position={-playerIndex+3} index={3} isJoined={state.players.length > 3}/>
+                            <Player position={-playerIndex+0} index={0} isJoined={state.players[0] !== null}/>
+                            <Player position={-playerIndex+1} index={1} isJoined={state.players[1] !== null}/>
+                            <Player position={-playerIndex+2} index={2} isJoined={state.players[2] !== null}/>
+                            <Player position={-playerIndex+3} index={3} isJoined={state.players[3] !== null}/>
                             <Table playerIndex={playerIndex} openingPlayer={state.round.openingPlayer} cards={state.round.playedCards} />
                             <Trump trump={state.round.trump} />
                         </div>
@@ -148,7 +143,14 @@ export default function Game({ id, table }: GameProps) {
                     <Hand 
                         playerIndex={playerIndex}
                     />
-                    <ScoreBoard team1Points={state.round.team1Points} team1Score={state.team1Score} team2Points={state.round.team2Points} team2Score={state.team2Score}/>
+                    <ScoreBoard 
+                        players={state.players}
+                        playerIndex={playerIndex}
+                        team1Points={state.round.team1Points} 
+                        team1Score={state.team1Score} 
+                        team2Points={state.round.team2Points} 
+                        team2Score={state.team2Score}
+                    />
                     <Buttons playerIndex={playerIndex} isCheatMode={table.cheating} joined={state.joined} id={id} onExit={handleExit} />
                 </GameContext.Provider>
             } 
